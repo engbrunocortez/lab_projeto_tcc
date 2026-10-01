@@ -1,0 +1,1905 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LAB Projeto TCC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#12355b; --navy2:#1c4a7a; --blue:#2a6fdb; --blue-soft:#e8f0fd;
+  --green:#2e8b62; --green-soft:#e5f4ec; --orange:#d9731f; --orange-soft:#fdf0e3;
+  --red:#b83b3b; --red-soft:#fbeaea;
+  --bg:#f3f5f9; --card:#ffffff; --ink:#1d2733; --muted:#5b6878; --line:#dbe2ec;
+  --radius:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;font-size:16px;line-height:1.5}
+h1,h2,h3{font-family:"Source Serif 4",Georgia,serif;color:var(--navy);line-height:1.25}
+button{font:inherit;cursor:pointer}
+input,textarea,select{font:inherit;color:inherit}
+a{color:var(--blue)}
+.hidden{display:none!important}
+
+/* ---------- login ---------- */
+#tela-login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 60%,#245d8f 100%)}
+.login-box{background:var(--card);border-radius:14px;max-width:420px;width:100%;padding:32px 28px;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.login-box .marca{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);font-weight:700}
+.login-box h1{margin:6px 0 4px;font-size:28px}
+.login-box p.sub{margin:0 0 22px;color:var(--muted)}
+.login-box label{display:block;font-weight:600;margin:12px 0 4px}
+.login-box input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.login-box button{width:100%;margin-top:20px;padding:11px;border:0;border-radius:8px;background:var(--blue);color:#fff;font-weight:700}
+.login-erro{color:var(--red);margin-top:10px;min-height:1.4em;font-size:14px}
+.demo-note{margin-top:18px;padding:10px 12px;border-radius:8px;background:var(--orange-soft);font-size:13.5px;color:#7a4513}
+
+/* ---------- layout ---------- */
+#app{display:flex;min-height:100vh}
+#sidebar{width:290px;flex:0 0 290px;background:var(--navy);color:#dfe8f4;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-top{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,.12)}
+.sb-top .marca{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:#f3a65f;font-weight:700}
+.sb-top .grupo{font-family:"Source Serif 4",Georgia,serif;font-size:19px;color:#fff;margin:4px 0 2px;line-height:1.25}
+.sb-top .quem{font-size:13.5px;color:#b7c7dc}
+.sb-top select{width:100%;margin-top:10px;padding:7px;border-radius:6px;border:0;background:#fff;color:var(--navy);font-weight:600}
+.sb-sec{padding:12px 10px 4px 18px;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:#8fa6c3}
+.sb-nav{list-style:none;margin:0;padding:0 8px}
+.sb-nav li button{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;background:none;border:0;color:#dfe8f4;padding:8px 10px;border-radius:8px;font-size:14.5px;line-height:1.3}
+.sb-nav li button:hover{background:rgba(255,255,255,.08)}
+.sb-nav li button.ativo{background:#fff;color:var(--navy);font-weight:600}
+.sb-nav .ic{flex:0 0 22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:2px solid #6f88a8;color:#b7c7dc;margin-top:-1px}
+.sb-nav .ic.ok{background:var(--green);border-color:var(--green);color:#fff}
+.sb-nav .ic.and{border-color:#f3a65f;color:#f3a65f}
+.sb-nav .ic.lock{border-style:dashed;color:#6f88a8}
+.sb-nav li button.ativo .ic{border-color:var(--navy);color:var(--navy)}
+.sb-nav li button.ativo .ic.ok{background:var(--green);border-color:var(--green);color:#fff}
+.sb-foot{margin-top:auto;padding:14px 18px 20px;border-top:1px solid rgba(255,255,255,.12);display:flex;flex-direction:column;gap:8px}
+.sb-foot button{background:rgba(255,255,255,.1);color:#fff;border:0;padding:8px 10px;border-radius:8px;text-align:left;font-size:14px}
+.sb-foot button:hover{background:rgba(255,255,255,.18)}
+.sync{font-size:12.5px;color:#9fb3cc}
+.sync.erro{color:#ffb3a8}
+
+#main{flex:1;min-width:0;padding:28px 36px 80px}
+.wrap{max-width:900px;margin:0 auto}
+.demo-bar{background:var(--orange-soft);color:#7a4513;border:1px solid #f1cfa8;border-radius:8px;padding:8px 12px;font-size:14px;margin-bottom:16px}
+.erro-bar{background:var(--red-soft);color:var(--red);border:1px solid #efc4c4;border-radius:8px;padding:8px 12px;font-size:14px;margin-bottom:16px}
+#topo-mobile{display:none}
+
+/* ---------- etapa ---------- */
+.et-head{margin-bottom:18px}
+.et-num{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);font-weight:700}
+.et-head h1{margin:4px 0 6px;font-size:30px}
+.et-head p.sub{margin:0;color:var(--muted);font-size:17px}
+.et-meta{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;font-size:13px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:#e9edf3;color:var(--muted);font-weight:600}
+.pill.ok{background:var(--green-soft);color:var(--green)}
+.pill.and{background:var(--orange-soft);color:var(--orange)}
+.pill.lock{background:#eceff4;color:#6d7a8a}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;margin:16px 0}
+.card h2{font-size:21px;margin:0 0 6px}
+.card h3{font-size:17px;margin:16px 0 6px}
+.card > p:first-child{margin-top:0}
+details.entenda{background:var(--blue-soft);border:1px solid #cddcf6;border-radius:var(--radius);padding:0;margin:16px 0}
+details.entenda > summary{padding:14px 20px;font-weight:700;color:var(--navy);cursor:pointer;list-style:none}
+details.entenda > summary::before{content:"▸ ";color:var(--blue)}
+details.entenda[open] > summary::before{content:"▾ "}
+details.entenda .corpo{padding:0 22px 18px}
+details.entenda .corpo p{margin:8px 0}
+.fonte-gil{font-size:13px;color:var(--muted);margin-top:10px}
+.ex{border-left:4px solid var(--line);padding:6px 12px;margin:8px 0;background:#fff;border-radius:0 6px 6px 0;font-size:15px}
+.ex.ruim{border-left-color:var(--red)}
+.ex.bom{border-left-color:var(--green)}
+.ex b{color:var(--navy)}
+.alerta{background:var(--orange-soft);border:1px solid #f1cfa8;border-radius:var(--radius);padding:12px 16px;margin:14px 0;color:#6b3d10}
+.alerta b{color:#8a4a10}
+.lock-banner{background:#eef1f5;border:1px dashed #9aa8b8;border-radius:var(--radius);padding:12px 16px;margin:14px 0;color:#43505f}
+.prof-box{background:#fff7e8;border:1px solid #f0d39b;border-radius:var(--radius);padding:12px 16px;margin:14px 0}
+.prof-box .t{font-weight:700;color:#8a5a00;font-size:14px;margin-bottom:4px}
+.prof-box textarea{background:#fffdf7}
+
+.campo{margin:16px 0}
+.campo > label,.campo > .lbl{display:block;font-weight:700;color:var(--ink);margin-bottom:3px}
+.campo .ajuda{font-size:14px;color:var(--muted);margin:0 0 6px}
+.campo input[type=text],.campo input[type=number],.campo textarea,.campo select,.col-card input,.col-card textarea,.col-card select{
+  width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:#fbfcfe;transition:border-color .15s,box-shadow .15s}
+.campo textarea,.col-card textarea{resize:vertical;min-height:84px;line-height:1.45}
+.campo input:focus,.campo textarea:focus,.campo select:focus,.col-card input:focus,.col-card textarea:focus,.col-card select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(42,111,219,.15);background:#fff}
+.campo input:disabled,.campo textarea:disabled,.col-card :disabled{background:#f1f3f6;color:#69768a}
+.meta{font-size:12.5px;color:var(--muted);margin-top:4px;min-height:1em}
+.meta.flash{color:var(--blue);font-weight:600}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opts label{display:flex;gap:9px;align-items:flex-start;padding:8px 11px;border:1px solid var(--line);border-radius:8px;background:#fbfcfe;cursor:pointer;font-weight:400}
+.opts label:hover{border-color:#b8c6d8}
+.opts input{margin-top:4px}
+.opts .od{display:block;font-size:13.5px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{border:1px solid #c6d4ea;background:#fff;color:var(--navy);padding:3px 10px;border-radius:999px;font-size:13.5px}
+.chip:hover{background:var(--blue-soft)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 14px}
+
+.checklist{background:var(--card);border:2px solid var(--navy);border-radius:var(--radius);padding:18px 22px;margin:22px 0}
+.checklist h2{font-size:19px;margin:0 0 4px}
+.et-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+.btn{border:0;border-radius:8px;padding:9px 16px;font-weight:700;background:var(--blue);color:#fff}
+.btn:hover{filter:brightness(1.07)}
+.btn.verde{background:var(--green)}
+.btn.sec{background:#fff;color:var(--navy);border:1px solid #b9c7da}
+.btn.peq{padding:5px 11px;font-size:14px}
+.btn.perigo{background:#fff;color:var(--red);border:1px solid #e3b3b3}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.faltando{margin-top:10px;font-size:14px;color:var(--red)}
+.faltando ul{margin:4px 0 0;padding-left:20px}
+
+/* coleções */
+.col-lista{display:flex;flex-direction:column;gap:10px;margin:10px 0}
+details.col-card{border:1px solid var(--line);border-radius:var(--radius);background:#fbfcfe}
+details.col-card > summary{padding:10px 14px;cursor:pointer;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;list-style:none}
+details.col-card > summary::-webkit-details-marker{display:none}
+details.col-card > summary .ct{font-weight:700;color:var(--navy);flex:1;min-width:200px}
+details.col-card > summary .cm{font-size:12.5px;color:var(--muted)}
+details.col-card .cc{padding:4px 14px 14px;border-top:1px solid var(--line)}
+.col-card .cf{margin:10px 0}
+.col-card .cf > label{display:block;font-weight:600;font-size:14.5px;margin-bottom:3px}
+.col-card .cf .ajuda{font-size:13px;color:var(--muted);margin:0 0 4px}
+.meses{display:flex;flex-wrap:wrap;gap:6px}
+.meses label{display:flex;gap:5px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:13.5px;background:#fff}
+.vazio{color:var(--muted);font-style:italic;padding:8px 0}
+
+/* dinâmicos */
+.funil{display:flex;flex-direction:column;align-items:center;gap:6px;margin:12px 0}
+.funil .nv{border-radius:8px;padding:10px 14px;color:#fff;text-align:center}
+.funil .nv .n{font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+.funil .nv .t{font-weight:700}
+.funil .nv .c{font-size:12.5px;opacity:.9}
+.seq{display:flex;flex-direction:column;gap:8px}
+.seq .p{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:#fbfcfe}
+.seq .p .r{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--orange)}
+.seq .p.falta{border-style:dashed;color:var(--muted)}
+.tbl{width:100%;border-collapse:collapse;font-size:14.5px;margin:8px 0}
+.tbl th,.tbl td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.tbl th{background:#eef2f8;color:var(--navy)}
+.tbl td.num{text-align:right;white-space:nowrap}
+.gantt td.m{width:46px;padding:0}
+.gantt td.m.on{background:var(--blue)}
+.gantt td.m.on.dev{background:var(--orange)}
+.gantt th.m{font-size:12px;text-align:center;padding:4px 2px}
+.tbl-scroll{overflow-x:auto}
+.fases{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch;margin:12px 0}
+.fase{border-radius:var(--radius);padding:16px;color:#fff}
+.fase.a{background:var(--navy)}
+.fase.b{background:#7a8899}
+.fase h3{color:#fff;margin:0 0 4px;font-size:19px}
+.fase .prod{display:inline-block;margin-top:6px;background:rgba(255,255,255,.18);padding:3px 10px;border-radius:999px;font-weight:700;font-size:14px}
+.fase ul{margin:8px 0 0;padding-left:18px;font-size:14.5px}
+.fases .seta{display:flex;align-items:center;font-size:28px;color:var(--muted)}
+.quiz-item{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:8px 0;background:#fff}
+.quiz-item .q{font-weight:600}
+.quiz-item .bt{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.quiz-item .fb{font-size:14px;margin-top:6px}
+.quiz-item .fb.ok{color:var(--green)}
+.quiz-item .fb.no{color:var(--red)}
+.dica-grupo{background:var(--green-soft);border:1px solid #bfe2cf;border-radius:var(--radius);padding:12px 16px;margin:12px 0}
+.dica-grupo b{color:#1d6a48}
+.links a{display:inline-block;margin:2px 10px 2px 0}
+
+/* projeto montado */
+.doc{background:#fff;border:1px solid var(--line);border-radius:4px;padding:40px 48px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#111}
+.doc h1,.doc h2,.doc h3{font-family:Arial,Helvetica,sans-serif;color:#111}
+.doc .capa{text-align:center;margin-bottom:32px}
+.doc .capa .inst{font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+.doc .capa h1{font-size:22px;margin:22px 0 10px}
+.doc h2{font-size:17px;text-transform:uppercase;margin:26px 0 8px}
+.doc h3{font-size:15.5px;margin:16px 0 6px}
+.doc .pend{color:#a33;background:#fdeeee;padding:1px 4px;border-radius:3px}
+.doc p{text-align:justify;margin:6px 0}
+
+/* painel */
+.pg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.pg-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+.pg-card h3{margin:0 0 2px;font-size:17px}
+.pg-card .tm{font-size:13.5px;color:var(--muted)}
+.dots{display:flex;gap:4px;margin:10px 0}
+.dots span{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;border:2px solid #c9d3e0;color:#8392a5}
+.dots span.ok{background:var(--green);border-color:var(--green);color:#fff}
+.dots span.and{border-color:var(--orange);color:var(--orange)}
+.barra{height:8px;background:#e8edf4;border-radius:4px;overflow:hidden}
+.barra > i{display:block;height:100%;background:var(--blue)}
+.membros td{font-size:14px}
+.timeline{list-style:none;padding:0;margin:0;font-size:14px}
+.timeline li{padding:6px 0;border-bottom:1px solid #edf0f4}
+.timeline .h{color:var(--muted);font-size:12.5px}
+
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:50;font-size:15px}
+.modal-fundo{position:fixed;inset:0;background:rgba(12,24,40,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:40}
+.modal{background:#fff;border-radius:12px;max-width:640px;width:100%;max-height:85vh;overflow:auto;padding:22px}
+.modal h2{margin-top:0}
+.modal textarea{width:100%;min-height:260px;font-family:ui-monospace,Consolas,monospace;font-size:13.5px;padding:10px;border:1px solid var(--line);border-radius:8px}
+
+@media (max-width:900px){
+  #app{flex-direction:column}
+  #sidebar{position:fixed;inset:0 auto 0 0;width:84vw;max-width:320px;transform:translateX(-100%);transition:transform .2s;z-index:30;height:100vh}
+  #sidebar.aberto{transform:none}
+  #topo-mobile{display:flex;gap:10px;align-items:center;background:var(--navy);color:#fff;padding:10px 16px;position:sticky;top:0;z-index:20}
+  #topo-mobile button{background:rgba(255,255,255,.15);border:0;color:#fff;border-radius:6px;padding:6px 10px}
+  #main{padding:18px 16px 60px}
+  .grid2,.grid3,.fases{grid-template-columns:1fr}
+  .fases .seta{justify-content:center;transform:rotate(90deg)}
+  .doc{padding:22px 18px}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<section id="tela-login">
+  <form class="login-box" id="form-login" autocomplete="off">
+    <div class="marca">Planejamento do TCC · Segurança do Trabalho</div>
+    <h1>LAB Projeto TCC</h1>
+    <p class="sub">Do problema ao projeto de pesquisa</p>
+    <label for="lg-login">Login</label>
+    <input id="lg-login" type="text" required autocapitalize="off" spellcheck="false">
+    <label for="lg-senha">Senha</label>
+    <input id="lg-senha" type="password" required>
+    <button type="submit" id="lg-btn">Entrar</button>
+    <div class="login-erro" id="lg-erro"></div>
+    <div class="demo-note hidden" id="lg-demo">
+      <b>Modo demonstração</b> (ainda sem planilha conectada). Os dados ficam só neste navegador.<br>
+      Alunos do G1: <b>ana</b> / <b>1234</b> e <b>beto</b> / <b>1234</b> · Professor: <b>prof</b> / <b>prof</b>
+    </div>
+  </form>
+</section>
+
+<!-- ================= APP ================= -->
+<div id="app" class="hidden">
+  <aside id="sidebar">
+    <div class="sb-top">
+      <div class="marca">LAB Projeto TCC</div>
+      <div class="grupo" id="sb-grupo"></div>
+      <div class="quem" id="sb-quem"></div>
+      <select id="sb-sel-grupo" class="hidden" aria-label="Grupo"></select>
+    </div>
+    <div id="sb-prof" class="hidden">
+      <div class="sb-sec">Professor</div>
+      <ul class="sb-nav"><li><button data-ir="painel"><span class="ic">★</span><span>Painel da turma</span></button></li></ul>
+    </div>
+    <div class="sb-sec">Etapas do planejamento</div>
+    <ul class="sb-nav" id="sb-etapas"></ul>
+    <div class="sb-sec">Apoio</div>
+    <ul class="sb-nav">
+      <li><button data-ir="ia"><span class="ic" style="font-size:10px">IA</span><span>Uso responsável de IA</span></button></li>
+      <li><button data-ir="abnt"><span class="ic" style="font-size:9px">NBR</span><span>Normas ABNT</span></button></li>
+    </ul>
+    <div class="sb-foot">
+      <button id="bt-resumo">📋 Resumo da aula para o Teams</button>
+      <button id="bt-sair">Sair</button>
+      <div class="sync" id="sync">—</div>
+    </div>
+  </aside>
+  <div style="flex:1;min-width:0">
+    <div id="topo-mobile"><button id="bt-menu">☰ Etapas</button><span id="tm-titulo"></span></div>
+    <main id="main"><div class="wrap" id="conteudo"></div></main>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   CONFIGURAÇÃO
+   Cole entre as aspas a URL do "App da Web" gerada no Apps Script
+   (termina em /exec). Deixe vazio para usar o modo demonstração.
+   ===================================================================== */
+const API_URL = 'https://script.google.com/macros/s/AKfycby-uGwlbYEHVXc4NC2ktyTidklaIEvpFOvuS9gHa46PMg23rL3tu7a5Cy6NqBhmDvNe/exec';
+
+const POLL_MS = 25000;   // intervalo de sincronização com a planilha
+const MESES = ['Out/26','Nov/26','Dez/26','Fev/27','Mar/27','Abr/27','Mai/27','Jun/27'];
+const INSTITUICAO = 'Etec Padre Carlos Leôncio da Silva — Centro Paula Souza';
+const CURSO = 'Técnico em Segurança do Trabalho';
+
+/* ---------- pistas por grupo (pontos de partida; conferir sempre no texto oficial) ---------- */
+const DICAS = {
+  G1:{pal:['"segurança em eletricidade"','"choque elétrico" AND "acidente de trabalho"','"electrical safety" AND "occupational"','"electrical injuries" AND workers'],
+      normas:['NR-10 — Segurança em instalações e serviços em eletricidade','ABNT NBR 5410 — Instalações elétricas de baixa tensão','NR-1 — GRO/PGR (inventário de riscos)']},
+  G2:{pal:['"ergonomia" AND "escritório"','"LER/DORT" AND "trabalho informatizado"','"office ergonomics"','"computer workstation" AND "musculoskeletal"'],
+      normas:['NR-17 — Ergonomia (e o Manual de Aplicação da NR-17)','NR-1 — avaliação ergonômica preliminar no PGR','ABNT NBR 13962 — Móveis para escritório: cadeiras']},
+  G3:{pal:['"inteligência artificial" AND "segurança do trabalho"','"artificial intelligence" AND "occupational safety"','"computer vision" AND "PPE detection"','"machine learning" AND "accident prediction"'],
+      normas:['NR-1 — GRO/PGR','Lei 13.709/2018 (LGPD) — dados pessoais de trabalhadores','ABNT NBR ISO 45001 — Sistemas de gestão de SSO']},
+  G4:{pal:['"fadiga" AND "acidente de trabalho"','"trabalho em turnos" AND "sonolência"','"fatigue" AND "occupational accidents"','"shift work" AND "injury risk"'],
+      normas:['NR-17 — item de organização do trabalho','CLT — Capítulo II, Da Duração do Trabalho (jornada e descansos)','NR-1 — GRO/PGR (fatores de risco)']},
+  G5:{pal:['"risco biológico" AND "limpeza hospitalar"','"perfurocortantes" AND "higienização"','"hospital cleaning workers" AND "occupational exposure"','"needlestick injuries" AND "housekeeping"'],
+      normas:['NR-32 — Segurança e saúde no trabalho em serviços de saúde','NR-6 — Equipamento de Proteção Individual','RDC Anvisa nº 222/2018 — resíduos de serviços de saúde']},
+  G6:{pal:['"frentista" AND "benzeno"','"postos de combustíveis" AND "saúde do trabalhador"','"gas station attendants" AND "benzene exposure"','"fuel station" AND "occupational risk"'],
+      normas:['NR-20 — Inflamáveis e combustíveis','NR-9, Anexo 2 — Benzeno em postos revendedores de combustíveis','NR-16, Anexo 2 — Atividades perigosas com inflamáveis']}
+};
+const BASES = [
+  ['Google Acadêmico','https://scholar.google.com.br'],
+  ['SciELO','https://www.scielo.br'],
+  ['Revista Brasileira de Saúde Ocupacional (RBSO)','https://www.scielo.br/j/rbso/'],
+  ['Portal de Periódicos CAPES','https://www.periodicos.capes.gov.br'],
+  ['BDTD — teses e dissertações','https://bdtd.ibict.br'],
+  ['Fundacentro (NHO e publicações)','https://www.gov.br/fundacentro'],
+  ['Normas Regulamentadoras — MTE','https://www.gov.br/trabalho-e-emprego/pt-br'],
+  ['Observatório de SST (SmartLab)','https://smartlabbr.org/sst']
+];
+
+/* =====================================================================
+   DEFINIÇÃO DAS ETAPAS
+   ===================================================================== */
+const LAB = {};             // rótulos dos campos (para histórico e pendências)
+const T = (k,l,h,ph)=>(LAB[k]=l,{t:'text',k,l,h,ph});
+const A = (k,l,h,ph,rows)=>(LAB[k]=l,{t:'area',k,l,h,ph,rows});
+const R = (k,l,opts,h)=>(LAB[k]=l,{t:'radio',k,l,opts,h});
+const C = (k,l,opts,h)=>(LAB[k]=l,{t:'checks',k,l,opts,h});
+const INFO = html=>({t:'info',html});
+const H = (txt,sub)=>({t:'h',txt,sub});
+const DYN = (nome)=>({t:'dyn',nome});
+const SHOW = (cond,blocos)=>({t:'show',cond,blocos});
+const COL = (cfg)=>{LAB['col:'+cfg.prefixo]=cfg.titulo; return {t:'col',...cfg};};
+
+const OP_SECAO = ['2.1','2.2','2.3','2.4'];
+
+const ETAPAS = [
+/* ------------------------------------------------------------------ 0 */
+{ id:'e0', titulo:'Ponto de partida', sub:'Planejar não é executar: o que a equipe produz neste semestre', gil:'Gil (2002), cap. 1', deps:[],
+  entenda:`
+  <p>Uma pesquisa acontece em duas grandes fases. Neste semestre, a equipe <b>planeja</b>. O produto do planejamento é o <b>projeto de pesquisa</b>. No próximo semestre, a equipe <b>desenvolve</b> o que planejou e o produto é o <b>artigo científico</b>.</p>
+  <p>Para Gil, o projeto é o documento que deixa explícito o que será feito ao longo da pesquisa: o problema, os objetivos, o tipo de pesquisa, como os dados serão coletados e analisados, o cronograma e os recursos. Sem esse documento, a coleta vira um amontoado de dados que não responde a nenhuma pergunta precisa.</p>
+  <div class="fases">
+    <div class="fase a"><h3>1. Planejamento</h3>Este semestre<br><span class="prod">Produto: PROJETO</span>
+      <ul><li>formular o problema e os objetivos</li><li>buscar e fichar fontes, normas e dados públicos</li><li>escolher o tipo de pesquisa e o delineamento</li><li><b>elaborar</b> (rascunhar) o instrumento de coleta</li><li>prever tempo e custos</li></ul></div>
+    <div class="seta">→</div>
+    <div class="fase b"><h3>2. Desenvolvimento</h3>Próximo semestre<br><span class="prod">Produto: ARTIGO</span>
+      <ul><li>pré-testar o instrumento</li><li><b>aplicar</b> questionários, entrevistar, observar, medir</li><li>analisar e interpretar os dados</li><li>escrever resultados, discussão e conclusão</li></ul></div>
+  </div>
+  <div class="alerta"><b>Por que não sair entrevistando já?</b> Dados coletados antes de o problema, os objetivos e o instrumento estarem definidos quase sempre são descartados: as perguntas não batem com os objetivos, faltam informações importantes e a equipe tem de voltar a campo. Planejar bem economiza tempo.</div>
+  <h3>Este sistema é o "Documento Mestre" da equipe</h3>
+  <p>Fernanda Scussel chama de <b>Documento Mestre</b> o lugar único onde a pesquisa vai sendo construída. Leituras, fichamentos e conversas com IA são matéria-prima; só entra no Documento Mestre aquilo que a equipe já analisou, selecionou e assumiu como seu. Aqui, cada campo preenchido é parte do projeto, e o sistema registra quem escreveu o quê. Respostas de IA nunca são coladas direto: primeiro são revisadas pela equipe.</p>`,
+  blocos:[
+    T('e0.tema_teams','Tema do grupo (como está no canal do Teams)','', 'Ex.: Riscos em postos de combustíveis'),
+    T('e0.orientador','Professor orientador','', 'Prof. ...'),
+    A('e0.acordos','Combinados da equipe: como vamos dividir o trabalho nesta fase?','Cada integrante pode trabalhar em uma etapa diferente ao mesmo tempo, em computadores diferentes. O sistema registra quem escreveu cada campo.','Ex.: Ana e Beto — fichamento de artigos; Caio — normas; Duda — problema e objetivos; Edu — revisão da redação.',4),
+  ],
+  checklist:['Entendemos a diferença entre planejamento (projeto) e desenvolvimento (artigo).',
+             'Nesta fase não vamos aplicar questionários, entrevistar nem coletar dados em campo.',
+             'Combinamos como a equipe vai dividir o trabalho.'],
+  obrig:['e0.tema_teams','e0.acordos']
+},
+/* ------------------------------------------------------------------ 1 */
+{ id:'e1', titulo:'Tema e problema de pesquisa', sub:'Transformar um assunto amplo em uma pergunta que a pesquisa consegue responder', gil:'Gil (2002), cap. 2 e seções 5.2 a 5.4', deps:['e0'],
+  entenda:`
+  <p><b>Tema</b> é um assunto amplo. <b>Problema</b> é uma pergunta específica sobre esse tema, que a pesquisa vai responder. Gil lembra que escolher um tema não basta: o tema precisa ser <i>problematizado</i>, isto é, transformado em pergunta.</p>
+  <p>Nem toda pergunta pode ser respondida pela ciência. Gil (apoiado em Kerlinger) distingue três tipos:</p>
+  <ul>
+   <li><b>Problema científico</b>: envolve variáveis que podem ser observadas ou medidas (quais, quanto, com que frequência, em que medida, que relação existe).</li>
+   <li><b>Problema de valor</b>: pergunta se algo é bom, ruim, certo, errado, ou se <i>deve</i> ser feito. Não pode ser verificado com dados.</li>
+   <li><b>Problema de "engenharia"</b>: pergunta <i>como fazer</i> algo de forma eficiente ("como reduzir…?", "como melhorar…?"). A ciência pode oferecer subsídios, mas não responde diretamente.</li>
+  </ul>
+  <p>Em Segurança do Trabalho é muito comum começar por uma pergunta de engenharia. Isso não proíbe a equipe de propor melhorias: a proposta pode aparecer nos resultados. Mas a <b>pergunta de pesquisa</b> precisa ser investigável.</p>
+  <h3>Exemplo com outro tema: trabalho em altura</h3>
+  <div class="ex ruim"><b>Tema, não problema:</b> "Trabalho em altura na construção civil."</div>
+  <div class="ex ruim"><b>Engenharia:</b> "Como acabar com as quedas nas obras?"</div>
+  <div class="ex ruim"><b>Valor:</b> "As empresas deveriam fiscalizar mais o uso do cinto?"</div>
+  <div class="ex bom"><b>Científico e delimitado:</b> "Quais dificuldades os trabalhadores de obras residenciais de pequeno porte de Lorena/SP apontam para cumprir as medidas de proteção contra quedas da NR-35?"</div>
+  <p>Gil também recomenda um <b>levantamento bibliográfico preliminar</b> antes de fechar o problema: ler um pouco sobre o tema ajuda a delimitar e a perguntar melhor. É comum reformular a pergunta várias vezes.</p>`,
+  blocos:[
+    DYN('quiz1'),
+    H('O ponto de partida da equipe'),
+    T('e1.tema','Tema (amplo)','','Ex.: Riscos em postos de combustíveis'),
+    A('e1.inquietacao','O que observamos, vivemos ou lemos sobre esse tema que nos inquieta?','Descrevam a situação real que motivou o grupo. Isso ajuda a encontrar o problema.','',3),
+    H('Delimitação','Gil: o problema deve ser delimitado a uma dimensão viável.'),
+    { t:'grid3', blocos:[
+      T('e1.onde','Onde?','Local, setor, tipo de empresa, cidade','Ex.: postos de Lorena/SP'),
+      T('e1.quem','Quem ou o quê?','Trabalhadores, função, atividade, documento','Ex.: frentistas'),
+      T('e1.quando','Quando?','Período considerado (se fizer sentido)','Ex.: 2026–2027'),
+    ]},
+    H('Construindo a pergunta'),
+    A('e1.pergunta_v1','Primeira versão da pergunta','Escrevam como saiu, sem medo. Depois vamos testá-la.','',2),
+    R('e1.tipo_v1','Essa primeira versão é um problema…',[
+      {v:'cientifico',l:'Científico',d:'Envolve algo observável ou mensurável'},
+      {v:'valor',l:'De valor',d:'Pergunta se é bom/certo/se deve ser feito → reformular'},
+      {v:'engenharia',l:'De "engenharia"',d:'Pergunta como fazer/como reduzir → reformular'},
+      {v:'nao_sei',l:'Não temos certeza',d:'Peçam ajuda ao professor no canal do grupo'}]),
+    A('e1.problema','Pergunta de pesquisa (versão atual)','Escrevam como pergunta, com a delimitação (onde, quem, quando).','',3),
+    T('e1.titulo','Título provisório do projeto','O título pode mudar até o final. Deve indicar o tema e o recorte.',''),
+  ],
+  checklist:['A pergunta está escrita como pergunta.',
+             'É clara e precisa, sem termos vagos como "melhorar", "adequado" ou "ruim".',
+             'É empírica: pode ser respondida com dados observáveis, não com opinião ou julgamento de valor.',
+             'É suscetível de solução: temos como obter os dados (acesso, tempo, técnica).',
+             'Está delimitada (onde, quem, quando) a uma dimensão viável para um TCC.'],
+  obrig:['e1.tema','e1.onde','e1.quem','e1.problema','e1.titulo']
+},
+/* ------------------------------------------------------------------ 2 */
+{ id:'e2', titulo:'Objetivos e hipóteses', sub:'O que a pesquisa vai alcançar para responder à pergunta', gil:'Gil (2002), cap. 3 e seções 10.2 e 16.1.1', deps:['e1'],
+  entenda:`
+  <p>O <b>objetivo geral</b> diz o que a pesquisa pretende alcançar para responder ao problema. Começa com um verbo no infinitivo (identificar, descrever, analisar, verificar, comparar…). Os <b>objetivos específicos</b> são partes menores e observáveis que, somadas, cumprem o objetivo geral.</p>
+  <div class="alerta"><b>Erro muito comum:</b> confundir objetivos com tarefas da equipe. "Fazer pesquisa bibliográfica", "aplicar questionário" e "entrevistar trabalhadores" são <b>procedimentos</b>: vão na metodologia, não nos objetivos.</div>
+  <p><b>Hipótese</b> é uma resposta provisória ao problema, que pode ser confirmada ou não pelos dados. Segundo Gil, uma boa hipótese é conceitualmente clara, específica, tem referência empírica (não usa "bom", "mau", "deve"), é simples, pode ser testada com as técnicas disponíveis e se apoia em alguma teoria ou em estudos anteriores.</p>
+  <p>Nem toda pesquisa precisa enunciar hipótese. Em estudos <b>descritivos</b> ou <b>exploratórios</b>, ela costuma ficar implícita nos objetivos. Quando a pesquisa investiga a <b>relação entre variáveis</b>, a hipótese deve ser escrita com clareza, indicando a <b>variável independente</b> (o fator que influenciaria) e a <b>variável dependente</b> (o efeito). A <b>definição operacional</b> diz como cada variável será observada ou medida.</p>
+  <h3>Exemplo (trabalho em altura)</h3>
+  <div class="ex bom"><b>Geral:</b> Identificar as dificuldades para o cumprimento das medidas de proteção contra quedas da NR-35 em obras residenciais de pequeno porte de Lorena/SP.</div>
+  <div class="ex bom"><b>Específicos:</b> (1) Caracterizar o perfil dos trabalhadores quanto à função, ao tempo de experiência e à capacitação; (2) Verificar quais medidas de proteção contra quedas estão presentes nas obras; (3) Comparar as medidas encontradas com os requisitos da NR-35.</div>
+  <div class="ex ruim"><b>Não é objetivo:</b> "Realizar entrevistas com os pedreiros."</div>
+  <div class="ex bom"><b>Hipótese:</b> Trabalhadores sem capacitação formal em NR-35 relatam menor uso de sistemas de proteção contra quedas. <br><b>VI:</b> capacitação (sim/não, comprovada por certificado) · <b>VD:</b> frequência relatada de uso do sistema (escala de 1 a 5).</div>`,
+  blocos:[
+    DYN('lembraProblema'),
+    {t:'verbos', alvo:'e2.obj_geral'},
+    A('e2.obj_geral','Objetivo geral','Um verbo no infinitivo + o que + recorte. Deve responder diretamente à pergunta.','',2),
+    H('Objetivos específicos','De 2 a 4. Cada um é um "pedaço" do objetivo geral.'),
+    T('e2.oe1','Objetivo específico 1','',''),
+    T('e2.oe2','Objetivo específico 2','',''),
+    T('e2.oe3','Objetivo específico 3 (opcional)','',''),
+    T('e2.oe4','Objetivo específico 4 (opcional)','',''),
+    H('Hipótese'),
+    R('e2.tem_hip','A pesquisa vai testar uma relação entre variáveis?',[
+      {v:'sim',l:'Sim, vamos investigar uma relação entre variáveis',d:'Escrevam a hipótese e as variáveis'},
+      {v:'nao',l:'Não, a pesquisa é descritiva ou exploratória',d:'A hipótese fica implícita nos objetivos'}]),
+    SHOW('e2.tem_hip=sim',[
+      A('e2.hipotese','Hipótese','Afirmação testável. Evitem "bom", "ruim", "deve".','',2),
+      {t:'grid2', blocos:[ T('e2.vi','Variável independente (fator)','',''), T('e2.vd','Variável dependente (efeito)','','') ]},
+      A('e2.operacional','Definição operacional: como cada variável será observada ou medida?','','',2),
+    ]),
+    SHOW('e2.tem_hip=nao',[
+      A('e2.sem_hip','Por que a pesquisa não precisa de hipótese explícita?','Uma ou duas frases.','',2),
+    ]),
+  ],
+  checklist:['O objetivo geral responde diretamente à pergunta de pesquisa.',
+             'Todos os objetivos começam com verbo no infinitivo.',
+             'Nenhum objetivo específico é uma tarefa da equipe (como "fazer pesquisa bibliográfica").',
+             'Se há hipótese, ela é testável e não usa palavras de valor (bom, ruim, deve).'],
+  obrig:['e2.obj_geral','e2.oe1','e2.oe2','e2.tem_hip']
+},
+/* ------------------------------------------------------------------ 3 */
+{ id:'e3', titulo:'Introdução: contexto e justificativa', sub:'Contexto → problema → importância → objetivo', gil:'Gil (2002), seção 16.1.1', deps:['e1'],
+  entenda:`
+  <p>A introdução do projeto (e, depois, a do artigo) conduz o leitor por um caminho de quatro passos: o <b>contexto</b> em que o problema acontece; o <b>problema</b> a ser investigado; a <b>importância</b> de investigá-lo (prática, social, técnica); e o <b>objetivo</b> da pesquisa.</p>
+  <p>Gil indica que a justificativa deve mostrar os fatores que levaram à escolha do tema, a importância da pesquisa e sua possível contribuição. Essa importância precisa estar apoiada em <b>dados e fontes</b>, não em opinião.</p>
+  <div class="ex ruim"><b>Fraco:</b> "Este tema é muito importante, pois muitos trabalhadores sofrem acidentes."</div>
+  <div class="ex bom"><b>Melhor:</b> "Segundo o Observatório de Segurança e Saúde no Trabalho, as quedas estão entre as principais causas de acidentes graves na construção civil (citar o dado e o ano consultado)."</div>
+  <p>Buscar estatísticas e documentos públicos <b>agora</b> é permitido: faz parte do levantamento bibliográfico e documental preliminar do planejamento.</p>
+  <p>Scussel detalha o miolo desse caminho: depois de apresentar o tema, a introdução mostra o <b>panorama da literatura</b> (o que os estudos já mostraram) e a <b>lacuna</b> (o que ainda não se sabe, ou não foi estudado naquele contexto). A pergunta de pesquisa deve nascer naturalmente dessa lacuna. Nesses dois elementos as afirmações precisam de citação; já a pergunta e o objetivo são formulações da própria equipe e normalmente não levam citação.</p>
+  <div class="ex bom"><b>Como citar um dado (NBR 10520:2023, sistema autor-data):</b> "… foram registradas X comunicações de acidente com quedas em 2024 (Brasil, 2025)." — o sobrenome ou a entidade vai em letras maiúsculas e minúsculas dentro dos parênteses, seguido do ano. A referência completa vai na lista de referências.</div>`,
+  blocos:[
+    A('e3.contexto','Contexto e apresentação do tema','Onde e como o problema acontece. Setor, atividade, situação atual.','',4),
+    A('e3.panorama','Panorama da literatura: o que os estudos já mostram sobre o tema','Usem os fichamentos (etapa 6). Cada afirmação com a chamada da fonte, ex.: (Silva; Souza, 2021).','',4),
+    A('e3.lacuna','Lacuna: o que ainda não se sabe, ou não foi estudado nesse contexto','É daqui que a pergunta de pesquisa deve nascer.','',3),
+    A('e3.dados','Dados e fatos que mostram a relevância (com fonte)','Para cada número, indiquem de onde veio no formato autor-data, ex.: (Brasil, 2025).','',4),
+    A('e3.importancia','Importância prática para a Segurança do Trabalho','Quem se beneficia? O que pode mudar no ambiente de trabalho?','',3),
+    A('e3.contribuicao','Contribuição esperada do trabalho','O que esta pesquisa acrescenta ao que já se sabe?','',3),
+    H('Como a introdução está ficando','Atualiza automaticamente com o que já foi escrito nas etapas 1 e 2.'),
+    DYN('sequenciaIntro'),
+  ],
+  checklist:['Cada dado numérico e cada afirmação do panorama tem a chamada da fonte (autor-data).',
+             'A justificativa não se apoia apenas em opinião.',
+             'A pergunta de pesquisa decorre da lacuna apresentada.',
+             'A sequência contexto → problema → importância → objetivo está completa.'],
+  obrig:['e3.contexto','e3.panorama','e3.lacuna','e3.dados','e3.importancia']
+},
+/* ------------------------------------------------------------------ 4 */
+{ id:'e4', titulo:'Classificação da pesquisa', sub:'Quanto aos objetivos e quanto aos procedimentos técnicos', gil:'Gil (2002), cap. 4', deps:['e2'],
+  entenda:`
+  <p>Gil classifica as pesquisas de duas maneiras.</p>
+  <h3>a) Quanto aos objetivos</h3>
+  <ul>
+   <li><b>Exploratória</b>: busca maior familiaridade com o problema, para torná-lo mais claro ou levantar hipóteses. Planejamento flexível; costuma usar levantamento bibliográfico, conversas com quem tem experiência no assunto e análise de exemplos.</li>
+   <li><b>Descritiva</b>: descreve características de uma população ou fenômeno, ou relações entre variáveis. Usa técnicas padronizadas, como questionário e observação sistemática.</li>
+   <li><b>Explicativa</b>: identifica os fatores que causam ou contribuem para o fenômeno. É a mais complexa e exige maior controle.</li>
+  </ul>
+  <h3>b) Quanto aos procedimentos técnicos (delineamento)</h3>
+  <p>O que define o delineamento é <b>de onde vêm os dados</b>: de "papel" (bibliográfica, documental) ou de pessoas (os demais).</p>
+  <div class="tbl-scroll"><table class="tbl">
+   <tr><th>Delineamento</th><th>Em poucas palavras</th><th>Exemplo (trabalho em altura)</th></tr>
+   <tr><td><b>Bibliográfica</b></td><td>Material já publicado: livros, artigos, teses.</td><td>O que os estudos apontam como causas de quedas.</td></tr>
+   <tr><td><b>Documental</b></td><td>Documentos que ainda não receberam tratamento analítico.</td><td>Análise de CATs, relatórios de investigação, PGR.</td></tr>
+   <tr><td><b>Experimental</b></td><td>O pesquisador manipula uma variável e controla as demais.</td><td>Raro em TCC técnico.</td></tr>
+   <tr><td><b>Ex-post facto</b></td><td>O fato já ocorreu; comparam-se grupos que tiveram exposições diferentes.</td><td>Comparar quase-acidentes entre trabalhadores com e sem capacitação.</td></tr>
+   <tr><td><b>Levantamento</b></td><td>Interroga diretamente um grupo significativo de pessoas.</td><td>Questionário com trabalhadores de várias obras.</td></tr>
+   <tr><td><b>Estudo de campo</b></td><td>Aprofunda um único grupo ou comunidade, com muita observação.</td><td>Acompanhar a rotina de uma equipe de montagem.</td></tr>
+   <tr><td><b>Estudo de caso</b></td><td>Estudo profundo de um ou poucos casos, com várias fontes de evidência.</td><td>Uma construtora: documentos, entrevistas, observação.</td></tr>
+   <tr><td><b>Pesquisa-ação</b></td><td>Pesquisadores e participantes atuam juntos para resolver um problema prático.</td><td>Construir com a equipe da obra um plano de resgate.</td></tr>
+  </table></div>
+  <p>Quase toda pesquisa tem uma parte bibliográfica. Marquem também o delineamento <b>principal</b>, aquele que vai produzir os dados para responder à pergunta.</p>`,
+  blocos:[
+    DYN('lembraObjetivo'),
+    R('e4.nivel','Quanto aos objetivos, a pesquisa é…',[
+      {v:'exploratoria',l:'Exploratória'},{v:'descritiva',l:'Descritiva'},{v:'explicativa',l:'Explicativa'}]),
+    A('e4.nivel_just','Por quê?','Relacionem com o verbo do objetivo geral e com a pergunta.','',2),
+    C('e4.proc','Quanto aos procedimentos técnicos (pode marcar mais de um)',[
+      {v:'bibliografica',l:'Bibliográfica'},{v:'documental',l:'Documental'},{v:'experimental',l:'Experimental'},{v:'expostfacto',l:'Ex-post facto'},
+      {v:'levantamento',l:'Levantamento (survey)'},{v:'campo',l:'Estudo de campo'},{v:'caso',l:'Estudo de caso'},{v:'acao',l:'Pesquisa-ação'}]),
+    A('e4.proc_just','Por que esses procedimentos são adequados à nossa pergunta?','Indiquem qual é o delineamento principal.','',3),
+    R('e4.abordagem','Abordagem dos dados',[
+      {v:'quali',l:'Qualitativa',d:'Falas, percepções, categorias, descrições'},
+      {v:'quanti',l:'Quantitativa',d:'Números, frequências, percentuais, medições'},
+      {v:'mista',l:'Mista (quali-quantitativa)'}]),
+    R('e4.biblio_pura','A pesquisa será essencialmente bibliográfica (sem coleta com pessoas ou em empresas)?',[
+      {v:'sim',l:'Sim',d:'No artigo, a Metodologia vem logo após a Introdução, e a Fundamentação teórica passa a ser o desenvolvimento da pesquisa.'},
+      {v:'nao',l:'Não',d:'Estrutura padrão: Introdução → Fundamentação → Metodologia → Resultados → Conclusão.'}]),
+  ],
+  checklist:['A classificação quanto aos objetivos é coerente com o verbo do objetivo geral (ex.: "descrever" → descritiva).',
+             'O delineamento escolhido consegue de fato responder à pergunta.',
+             'Justificamos as escolhas com base no Gil.'],
+  obrig:['e4.nivel','e4.nivel_just','e4.proc','e4.proc_just','e4.abordagem','e4.biblio_pura']
+},
+/* ------------------------------------------------------------------ 5 */
+{ id:'e5', titulo:'Delineamento: dados e instrumentos', sub:'De quem, onde, com qual instrumento e como os dados serão analisados', gil:'Gil (2002), caps. 10 a 12 e seção 16.1.2', deps:['e4'],
+  entenda:`
+  <div class="alerta"><b>Atenção:</b> nesta fase, o instrumento de coleta é <b>elaborado e revisado</b>, não aplicado. O pré-teste e a aplicação ficam para o desenvolvimento, depois que o projeto estiver aprovado.</div>
+  <p><b>Universo</b> (ou população) é o conjunto total de pessoas, locais ou documentos que interessam à pesquisa. <b>Amostra</b> é a parte desse universo que será efetivamente estudada. Gil descreve a amostragem aleatória simples, sistemática, estratificada, por conglomerados e por cotas. Em TCCs, é comum a amostra <b>intencional</b> (escolhida por critérios definidos pela equipe). Ela é válida, mas seus resultados não podem ser generalizados para todo o universo: isso deve aparecer nas limitações.</p>
+  <p><b>Instrumentos de coleta</b>: questionário (respondido por escrito pelo participante), entrevista (face a face), formulário (o pesquisador pergunta e anota), observação sistemática e análise documental. Em Segurança do Trabalho também são comuns <b>listas de verificação</b> baseadas em NRs e <b>medições ambientais</b> (com equipamento adequado e método normatizado, como as NHO da Fundacentro).</p>
+  <h3>Regras de Gil para elaborar perguntas (seleção)</h3>
+  <ul>
+   <li>Incluir só perguntas ligadas ao problema.</li>
+   <li>Uma ideia por pergunta; linguagem clara e adequada a quem vai responder.</li>
+   <li>A pergunta não pode sugerir a resposta.</li>
+   <li>Começar pelas perguntas mais simples; limitar a quantidade.</li>
+   <li>Evitar perguntas que constrangem ou invadem a intimidade.</li>
+   <li>Incluir uma introdução que explique a pesquisa e instruções de preenchimento.</li>
+  </ul>
+  <div class="ex ruim"><b>Sugere resposta:</b> "Você concorda que a empresa não oferece treinamento suficiente?"</div>
+  <div class="ex bom"><b>Neutra:</b> "Nos últimos 12 meses, você participou de algum treinamento sobre trabalho em altura? ( ) Sim ( ) Não"</div>`,
+  blocos:[
+    DYN('lembraClassif'),
+    A('e5.universo','Universo: quem ou o quê será estudado no total?','','',2),
+    A('e5.amostra','Amostra: quantos e quais serão estudados? Com que critério?','','',2),
+    R('e5.amostragem','Tipo de amostragem',[
+      {v:'aleatoria',l:'Aleatória simples'},{v:'sistematica',l:'Sistemática'},{v:'estratificada',l:'Estratificada'},
+      {v:'conglomerados',l:'Por conglomerados'},{v:'cotas',l:'Por cotas'},
+      {v:'intencional',l:'Intencional / não probabilística',d:'Escolhida por critérios da equipe'},
+      {v:'na',l:'Não se aplica',d:'Pesquisa bibliográfica ou documental'}]),
+    A('e5.local','Local e acesso','Onde os dados serão obtidos? Já existe contato ou autorização? O que precisa ser pedido?','',2),
+    C('e5.tecnicas','Técnicas de coleta previstas',[
+      {v:'questionario',l:'Questionário'},{v:'entrevista',l:'Entrevista'},{v:'formulario',l:'Formulário'},
+      {v:'observacao',l:'Observação sistemática'},{v:'documental',l:'Análise documental'},
+      {v:'checklist',l:'Lista de verificação baseada em NR'},{v:'medicao',l:'Medição ambiental'},
+      {v:'foto',l:'Registro fotográfico'},{v:'bibliografica',l:'Somente fontes bibliográficas'}]),
+    A('e5.instrumento','Rascunho do instrumento de coleta','Escrevam aqui as perguntas, os itens do roteiro ou os itens da lista de verificação. Indiquem, entre parênteses, a qual objetivo específico cada item responde. Ex.: "3. Você recebeu treinamento…? (OE1)"','',10),
+    A('e5.pre_teste','Como será o pré-teste (no próximo semestre)?','Com quem, quantas pessoas, o que será observado.','',2),
+    A('e5.analise','Plano de análise dos dados','Como cada objetivo será respondido? (tabelas, gráficos, percentuais, categorias, comparação com a NR…)','',3),
+    A('e5.etica','Cuidados éticos','Anonimato dos participantes, termo de consentimento, autorização da empresa, uso de imagens.','',2),
+    A('e5.limitacoes','Limitações previstas','O que a pesquisa não conseguirá responder ou generalizar?','',2),
+  ],
+  checklist:['Sabemos exatamente de quem ou de onde virão os dados.',
+             'Cada item do instrumento está ligado a um objetivo específico.',
+             'As perguntas tratam de uma ideia por vez e não sugerem respostas.',
+             'O plano de análise mostra como cada objetivo será respondido.',
+             'Nenhum dado foi coletado ainda: o instrumento só será aplicado depois do pré-teste, no desenvolvimento.'],
+  obrig:['e5.universo','e5.amostragem','e5.tecnicas','e5.instrumento','e5.analise','e5.etica']
+},
+/* ------------------------------------------------------------------ 6 */
+{ id:'e6', titulo:'Fundamentação teórica', sub:'Fontes, fichamentos e a arquitetura das seções 2.1 a 2.4', gil:'Gil (2002), cap. 5 e seção 6.2', deps:['e1'],
+  entenda:`
+  <p>A fundamentação teórica vai do <b>mais amplo ao mais específico</b>, como um funil, em <b>3 ou no máximo 4 seções</b>. Antes das seções, um texto introdutório explica como as fontes foram selecionadas (bases consultadas, palavras-chave, período, critérios) e por que a estrutura foi organizada daquela forma.</p>
+  <p><b>Exemplo de arquitetura (trabalho em altura):</b> 2.1 Acidentes de trabalho e quedas no Brasil → 2.2 Trabalho em altura na construção civil e a NR-35 → 2.3 Fatores que influenciam o uso de proteção contra quedas.</p>
+  <h3>Quatro leituras (Gil)</h3>
+  <ul>
+   <li><b>Exploratória</b>: olhar título, resumo, sumário e conclusão para saber se a fonte interessa.</li>
+   <li><b>Seletiva</b>: decidir o que de fato serve ao problema.</li>
+   <li><b>Analítica</b>: identificar as ideias-chave, hierarquizá-las e sintetizá-las.</li>
+   <li><b>Interpretativa</b>: relacionar o que o autor diz com o problema da equipe.</li>
+  </ul>
+  <h3>Fichamento</h3>
+  <p>Registrar a referência completa (ABNT NBR 6023) e as ideias principais <b>com as próprias palavras</b>. Gil observa que conseguir dizer uma ideia alheia com palavras próprias é sinal de que ela foi compreendida. Transcrição literal só entre aspas e com a página, separada das anotações: misturar as duas coisas leva ao plágio.</p>
+  <p>Normas e leis entram como fontes <b>documentais</b>: consultem sempre o texto oficial vigente e indiquem o item exato.</p>
+  <h3>ABNT desde o fichamento</h3>
+  <p>Registrem a referência no padrão da <b>NBR 6023:2025</b> já no momento do fichamento (o botão <b>🧩 Montar referência ABNT</b> ajuda) e anotem a <b>chamada</b> que será usada no texto, no padrão da <b>NBR 10520:2023</b>: sobrenome em maiúsculas e minúsculas e ano, como em (Gil, 2002). Assim, no próximo semestre, o artigo já nasce com citações e referências corretas. Veja a página <a href="#" data-irpara="abnt">Normas ABNT</a>.</p>
+  <div class="alerta"><b>IA não é base de dados.</b> Ferramentas de IA de conversa não consultam as bases científicas e podem inventar referências que parecem reais. Toda fonte fichada aqui foi encontrada em uma base de dados e lida pela equipe.</div>`,
+  blocos:[
+    H('a) Estratégia de busca','Habilidade 1.2: identificar fontes de pesquisa sobre o objeto em estudo.'),
+    DYN('dicaGrupo'),
+    A('e6.palavras','Palavras-chave e combinações de busca que a equipe vai usar','Em português e inglês. Usem aspas para expressões e AND / OR para combinar.','',3),
+    A('e6.criterios','Texto introdutório da fundamentação: critérios de seleção','Quais bases foram usadas? Que período? Que tipos de fonte? O que foi incluído e excluído? Como a estrutura das seções foi pensada?','',4),
+    H('b) Arquitetura da fundamentação','Do mais amplo (2.1) ao mais específico (2.3). A seção 2.4 é opcional.'),
+    {t:'secoes'},
+    DYN('funil'),
+    H('c) Legislação e normas','Habilidade 2.1: consultar legislação, normas e regulamentos relativos ao projeto.'),
+    COL({prefixo:'norma', titulo:'Legislação e normas', rotuloNovo:'+ Adicionar norma ou lei', montador:true,
+      resumo:o=>[(o.ident||'(sem identificação)').replace(/\*\*/g,'').slice(0,110), o.secao?('→ seção '+o.secao):''].join(' '),
+      campos:[
+        {f:'tipo',l:'Tipo',tipo:'select',ops:['NR','Lei','Decreto','Portaria','Norma ABNT','NHO Fundacentro','Resolução / RDC','Outro']},
+        {f:'ident',l:'Referência (ABNT NBR 6023:2025)',tipo:'area',rows:2,ph:'Use o botão "Montar referência ABNT" abaixo.',checar:'ref'},
+        {f:'chamada',l:'Como citar no texto',ph:'Ex.: (Brasil, 2023) ou (ABNT, 2004)'},
+        {f:'itens',l:'Itens, subitens ou anexos relevantes',ph:'Ex.: itens 35.3 e 35.5'},
+        {f:'estabelece',l:'O que estabelece (com as palavras da equipe)',tipo:'area'},
+        {f:'secao',l:'Será usada na seção',tipo:'select',ops:OP_SECAO},
+      ]}),
+    H('d) Fichamentos','Habilidade 2.3: organizar os dados obtidos em textos, planilhas, gráficos e esquemas.'),
+    COL({prefixo:'fich', titulo:'Fichamentos', rotuloNovo:'+ Adicionar fichamento', montador:true,
+      resumo:o=>[(o.ref||'(sem referência)').replace(/\*\*/g,'').slice(0,110), o.secao?('→ '+o.secao):''].join(' '),
+      campos:[
+        {f:'ref',l:'Referência completa (ABNT NBR 6023:2025)',tipo:'area',rows:2,ph:'Use o botão "Montar referência ABNT" abaixo, ou digite: SOBRENOME, Prenome. Título do artigo. **Nome da Revista**, local, v., n., p., ano.',checar:'ref'},
+        {f:'chamada',l:'Como citar no texto (NBR 10520:2023)',ph:'Ex.: (Silva; Souza, 2021) ou Silva e Souza (2021)'},
+        {f:'tipo',l:'Tipo de fonte',tipo:'select',ops:['Artigo científico','Livro','Capítulo de livro','Tese / dissertação / TCC','Documento técnico','Anais de evento','Estatística oficial','Outro']},
+        {f:'base',l:'Onde foi encontrada',ph:'Ex.: SciELO, Google Acadêmico, RBSO'},
+        {f:'link',l:'Link (DOI ou URL)'},
+        {f:'leitura',l:'Nível de leitura já feito',tipo:'select',ops:['Exploratória','Seletiva','Analítica','Interpretativa']},
+        {f:'objetivo',l:'Objetivo do estudo',tipo:'area',rows:2},
+        {f:'metodo',l:'Método usado pelos autores',tipo:'area',rows:2},
+        {f:'resultados',l:'Principais resultados (com as palavras da equipe)',tipo:'area'},
+        {f:'citacao',l:'Citação direta (opcional)',tipo:'area',rows:2,ajuda:'Transcrição literal, entre aspas, com a página: "…" (Silva, 2021, p. 14). No texto final, citações com mais de 3 linhas vão em bloco com recuo de 4 cm, letra menor, espaço simples e sem aspas (NBR 10520:2023).',checar:'citacao'},
+        {f:'contribuicao',l:'Como esta fonte ajuda o nosso trabalho?',tipo:'area',rows:2},
+        {f:'secao',l:'Será usada na seção',tipo:'select',ops:OP_SECAO},
+      ]}),
+    H('e) Matriz de síntese','Montada automaticamente a partir dos fichamentos e normas.'),
+    DYN('matriz'),
+  ],
+  checklist:['A arquitetura tem 3 ou 4 seções, do mais amplo ao mais específico.',
+             'Cada seção tem pelo menos 2 fontes fichadas.',
+             'As referências seguem a ABNT NBR 6023.',
+             'Os fichamentos estão com as palavras da equipe; citações literais têm aspas e página.',
+             'Consultamos as normas e leis no texto oficial vigente.'],
+  obrig:['e6.palavras','e6.criterios','e6.s1t','e6.s2t','e6.s3t'],
+  extra:()=>{ const f=[]; ['2.1','2.2','2.3'].forEach(s=>{ const n=colItens('fich').filter(o=>o.secao===s).length; if(n<2) f.push('Pelo menos 2 fichamentos na seção '+s+' (há '+n+')'); }); return f; }
+},
+/* ------------------------------------------------------------------ 7 */
+{ id:'e7', titulo:'Cronograma', sub:'Quando cada etapa acontece — planejamento e desenvolvimento', gil:'Gil (2002), seção 15.2', deps:['e5'],
+  entenda:`
+  <p>A pesquisa tem várias etapas, e algumas acontecem ao mesmo tempo. Gil recomenda um cronograma em forma de gráfico de Gantt: as linhas são as atividades e as colunas são os períodos. O cronograma é uma estimativa, mas ajuda a equipe a não perder o controle do projeto.</p>
+  <p>Separem bem as duas fases: <b>Planejamento</b> (este semestre, em azul) e <b>Desenvolvimento</b> (próximo semestre, em laranja). A coleta de dados só pode vir <b>depois</b> do pré-teste do instrumento.</p>`,
+  blocos:[
+    {t:'cronoSugestao'},
+    COL({prefixo:'crono', titulo:'Atividades', rotuloNovo:'+ Adicionar atividade',
+      resumo:o=>(o.atividade||'(sem nome)')+(o.fase?' · '+o.fase:''),
+      campos:[
+        {f:'atividade',l:'Atividade'},
+        {f:'fase',l:'Fase',tipo:'select',ops:['Planejamento','Desenvolvimento']},
+        {f:'resp',l:'Responsável(is)'},
+        {f:'meses',l:'Meses',tipo:'meses'},
+      ]}),
+    H('Gráfico de Gantt'),
+    DYN('gantt'),
+  ],
+  checklist:['O cronograma separa Planejamento (este semestre) e Desenvolvimento (próximo).',
+             'A coleta de dados está prevista só depois do pré-teste.',
+             'Cada atividade tem responsável e meses marcados.'],
+  obrig:[],
+  extra:()=>{ const n=colItens('crono').length; return n<5?['Pelo menos 5 atividades no cronograma (há '+n+')']:[]; }
+},
+/* ------------------------------------------------------------------ 8 */
+{ id:'e8', titulo:'Recursos, custos e viabilidade', sub:'O que a pesquisa vai consumir e se é possível realizá-la', gil:'Gil (2002), cap. 15 e seção 1.3.2', deps:['e5'],
+  entenda:`
+  <p>Mesmo sem financiamento externo, toda pesquisa consome <b>tempo e dinheiro</b>: transporte, impressão, equipamentos, materiais, horas de trabalho. Gil recomenda um orçamento por categorias (pessoal e material) e uma reserva para imprevistos.</p>
+  <p>Avaliar a <b>viabilidade técnica e econômica</b> significa verificar se a equipe consegue realizar a pesquisa com o acesso, o conhecimento, os equipamentos e o dinheiro disponíveis. É o mesmo raciocínio que a competência do componente pede para as soluções que vocês vão propor no final do trabalho.</p>`,
+  blocos:[
+    COL({prefixo:'custo', titulo:'Itens de custo', rotuloNovo:'+ Adicionar item',
+      resumo:o=>(o.item||'(sem nome)')+' · '+moeda(num(o.qtd)*num(o.unit)),
+      campos:[
+        {f:'cat',l:'Categoria',tipo:'select',ops:['Pessoal (horas)','Material de consumo','Impressão / cópias','Transporte','Equipamento / locação','Serviços','Outros']},
+        {f:'item',l:'Item',ph:'Ex.: impressão de 40 questionários'},
+        {f:'qtd',l:'Quantidade',tipo:'number'},
+        {f:'unit',l:'Valor unitário (R$)',tipo:'number'},
+        {f:'fonte',l:'Fonte do preço',ph:'Ex.: papelaria do centro, consulta em 01/10/2026'},
+      ]}),
+    DYN('orcamento'),
+    A('e8.viab_tec','Viabilidade técnica','Temos acesso ao local e às pessoas? Temos o conhecimento e os equipamentos necessários? Precisamos de autorização?','',3),
+    A('e8.viab_eco','Viabilidade econômica','O custo total é possível para a equipe? Quem arca com ele? Há alternativas mais baratas?','',3),
+    A('e8.riscos','Riscos para a execução e plano B','Ex.: e se a empresa não autorizar a visita?','',3),
+  ],
+  checklist:['Todos os itens têm quantidade e preço estimado com fonte.',
+             'Incluímos uma reserva para imprevistos.',
+             'Avaliamos se conseguiremos acesso ao local e aos participantes.',
+             'Temos um plano B caso o acesso seja negado.'],
+  obrig:['e8.viab_tec','e8.viab_eco','e8.riscos'],
+  extra:()=>colItens('custo').length<1?['Pelo menos 1 item de custo']:[]
+},
+/* ------------------------------------------------------------------ 9 */
+{ id:'e9', titulo:'Projeto de pesquisa', sub:'Montagem, revisão da redação e entrega no Teams', gil:'Gil (2002), cap. 16; ABNT NBR 6023, 10520 e 6028', deps:['e1'],
+  entenda:`
+  <p>O projeto reúne tudo o que foi planejado, na ordem indicada por Gil: introdução (justificativa, problema, objetivos e hipóteses), revisão da literatura, metodologia, cronograma, recursos e custos, referências e apêndices. O documento abaixo é montado <b>automaticamente</b> com o que a equipe escreveu nas etapas.</p>
+  <p><b>Estilo do texto (Gil):</b> impessoal ("este projeto", não "nosso projeto"), objetivo, claro, preciso (evitar "muitos", "recentemente", "quase todos"), coerente, conciso (frases curtas) e simples.</p>
+  <p>O projeto que vocês entregam agora é a base do <b>artigo</b> do próximo semestre: a introdução, a fundamentação e a metodologia serão reaproveitadas e ampliadas.</p>`,
+  blocos:[
+    H('Resumo e palavras-chave (ABNT NBR 6028:2021)','O resumo do projeto ainda não tem resultados: apresenta tema, problema, objetivo e metodologia prevista. No artigo, ele será informativo, com resultados e conclusão.'),
+    A('e9.resumo','Resumo do projeto','Parágrafo único, frases concisas, verbo na 3ª pessoa. No artigo: 100 a 250 palavras.','',6),
+    DYN('contaResumo'),
+    T('e9.palavras','Palavras-chave','De 3 a 5 termos, separados por ponto e vírgula e finalizados por ponto. Ex.: trabalho em altura; NR-35; construção civil.','Palavras-chave sem o rótulo, ex.: termo um; termo dois; termo três.'),
+    DYN('checaPalavras'),
+    H('Situação das etapas'),
+    DYN('completude'),
+    H('Do projeto ao artigo'),
+    DYN('projetoArtigo'),
+    H('Prévia do projeto'),
+    {t:'acoesProjeto'},
+    DYN('projeto'),
+  ],
+  checklist:['O resumo segue a NBR 6028: parágrafo único, 3ª pessoa, sem tópicos.',
+             'As chamadas no texto seguem a NBR 10520:2023 — ex.: (Gil, 2002) — e cada chamada tem sua referência.',
+             'As referências seguem a NBR 6023:2025 e foram conferidas nas fontes originais.',
+             'Impessoalidade: o texto está em 3ª pessoa ("este projeto"), sem "nosso" ou "eu".',
+             'Objetividade: os argumentos se apoiam em dados e fontes, não em opinião.',
+             'Clareza e precisão: não há termos vagos ("muitos", "recentemente", "quase todos").',
+             'Coerência: problema, objetivos, classificação e instrumento combinam entre si.',
+             'Concisão e simplicidade: frases curtas, sem palavras desnecessárias.',
+             'O uso de IA foi declarado (ou declaramos que não usamos).'],
+  obrig:['e9.resumo','e9.palavras'],
+  extra:()=>ETAPAS.slice(0,9).filter(e=>!concluida(e.id)).map(e=>'Concluir a etapa '+num(e.id)+' — '+e.titulo)
+}
+];
+const ET = Object.fromEntries(ETAPAS.map(e=>[e.id,e]));
+ETAPAS.forEach(e=>{ LAB['status.'+e.id]='Status da etapa'; LAB[e.id+'.chk']='Checklist da etapa'; LAB['prof.'+e.id]='Orientação do professor'; });
+['s1','s2','s3','s4'].forEach((s,i)=>{ LAB['e6.'+s+'t']='Título da seção 2.'+(i+1); LAB['e6.'+s+'d']='Descrição da seção 2.'+(i+1); LAB['e6.'+s+'sub']='Subseções da seção 2.'+(i+1); });
+ETAPAS.forEach(e=>{ LAB['ia.'+e.id+'.usou']='Uso de IA (etapa '+e.id.slice(1)+')'; LAB['ia.'+e.id+'.ferr']='Ferramenta de IA'; LAB['ia.'+e.id+'.para']='Finalidade do uso de IA'; LAB['ia.'+e.id+'.conf']='Verificação do uso de IA'; LAB['ia.'+e.id+'.prompt']='Prompt utilizado'; });
+
+const VERBOS = ['Identificar','Descrever','Caracterizar','Analisar','Verificar','Comparar','Avaliar','Investigar','Propor','Mapear'];
+const IA_FINS = [
+  {v:'ideias',l:'Gerar ideias ou palavras-chave para a busca'},
+  {v:'critica',l:'Pedir crítica à pergunta, aos objetivos ou ao instrumento'},
+  {v:'entender',l:'Explicar um conceito difícil'},
+  {v:'resumo',l:'Resumir um texto que a equipe também leu'},
+  {v:'revisao',l:'Revisar ortografia, gramática ou clareza de um texto da equipe'},
+  {v:'estrutura',l:'Sugerir organização ou estrutura'},
+  {v:'texto',l:'Gerar trechos de texto'},
+  {v:'referencias',l:'Sugerir fontes ou referências'},
+];
+
+/* =====================================================================
+   ESTADO E UTILITÁRIOS
+   ===================================================================== */
+const S = { cred:null, user:null, membros:[], grupos:[], grupo:null, campos:{}, dirty:{}, fila:{}, enviando:false,
+            vista:'e0', painel:null, abertos:new Set(), ultimaSync:null, erroSync:null };
+const MEM = {};
+const store = {
+  get(k){ try{ return localStorage.getItem(k) }catch(e){ return MEM[k]??null } },
+  set(k,v){ try{ localStorage.setItem(k,v) }catch(e){ MEM[k]=v } },
+};
+const sess = {
+  get(){ try{ return JSON.parse(sessionStorage.getItem('labtcc_sessao')||'null') }catch(e){ return MEM.__s||null } },
+  set(v){ try{ sessionStorage.setItem('labtcc_sessao',JSON.stringify(v)) }catch(e){ MEM.__s=v } },
+  del(){ try{ sessionStorage.removeItem('labtcc_sessao') }catch(e){ MEM.__s=null } },
+};
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nl2br=s=>esc(s).replace(/\n/g,'<br>');
+function num(v){ if(typeof v==='string' && /^e\d$/.test(v)) return +v.slice(1); const n=parseFloat(String(v??'').replace(',','.')); return isFinite(n)?n:0; }
+const moeda=v=>'R$ '+(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+function fmtData(iso){ if(!iso) return ''; const d=new Date(iso); if(isNaN(d)) return ''; return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); }
+function hojeStr(d=new Date()){ return d.toLocaleDateString('pt-BR'); }
+function primeiroNome(n){ return String(n||'').split(' ')[0]; }
+function toast(msg){ const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2600); }
+
+const val = k => (S.campos[k] && S.campos[k].v!=null) ? S.campos[k].v : '';
+function valArr(k){ try{ const a=JSON.parse(val(k)||'[]'); return Array.isArray(a)?a:[] }catch(e){ return [] } }
+function colItens(prefixo){
+  return Object.keys(S.campos).filter(k=>k.startsWith(prefixo+':') && val(k))
+    .sort().map(k=>{ let o={}; try{ o=JSON.parse(val(k))||{} }catch(e){} o.__k=k; o.__por=S.campos[k].nome; o.__em=S.campos[k].em; return o; });
+}
+function concluida(id){ return val('status.'+id)==='concluida'; }
+function isProf(){ return S.user && S.user.papel==='professor'; }
+function bloqueada(et){
+  if(isProf()) return false;
+  if(val('status.liberar')==='1') return false;
+  return et.deps.some(d=>!concluida(d));
+}
+function camposDaEtapa(et){
+  const ks=[]; const walk=bs=>bs.forEach(b=>{ if(b.k) ks.push(b.k); if(b.blocos) walk(b.blocos); if(b.t==='col') ks.push('col:'+b.prefixo); if(b.t==='secoes') ['s1','s2','s3','s4'].forEach(s=>ks.push('e6.'+s+'t','e6.'+s+'d','e6.'+s+'sub')); });
+  walk(et.blocos); return ks;
+}
+function statusEtapa(et){
+  if(concluida(et.id)) return 'ok';
+  if(bloqueada(et)) return 'lock';
+  const ks=camposDaEtapa(et);
+  const algo = ks.some(k=> k.startsWith('col:') ? colItens(k.slice(4)).length : !!val(k)) || valArr(et.id+'.chk').length;
+  return algo?'and':'novo';
+}
+function faltando(et){
+  const f=[];
+  et.obrig.forEach(k=>{ const v=val(k); if(!v || v==='[]') f.push(LAB[k]||k); });
+  const chk=valArr(et.id+'.chk'); et.checklist.forEach((c,i)=>{ if(!chk.includes(String(i))) f.push('Checklist: '+c); });
+  if(et.extra) f.push(...et.extra());
+  if(!val('ia.'+et.id+'.usou')) f.push('Registro de uso de IA nesta etapa');
+  return f;
+}
+
+/* =====================================================================
+   API (planilha via Apps Script) ou DEMO (navegador)
+   ===================================================================== */
+async function api(acao, dados={}){
+  const body = { acao, login:S.cred?.login, senha:S.cred?.senha, ...dados };
+  if(!API_URL) return demoApi(body);
+  const r = await fetch(API_URL, { method:'POST', body:JSON.stringify(body) }); // text/plain: sem preflight CORS
+  if(!r.ok) throw new Error('Falha de comunicação ('+r.status+')');
+  const j = await r.json();
+  if(!j.ok) throw new Error(j.erro||'Erro no servidor');
+  return j;
+}
+
+const DEMO_USUARIOS=[
+  {login:'prof',senha:'prof',nome:'Professor (demo)',grupo:'',papel:'professor'},
+  {login:'ana',senha:'1234',nome:'Ana Souza (demo)',grupo:'G1',papel:'aluno'},
+  {login:'beto',senha:'1234',nome:'Beto Lima (demo)',grupo:'G1',papel:'aluno'},
+  {login:'caio',senha:'1234',nome:'Caio Reis (demo)',grupo:'G2',papel:'aluno'},
+];
+const DEMO_GRUPOS=[
+  {id:'G1',nome:'Segurança em eletricidade'},{id:'G2',nome:'Ergonomia em escritórios'},{id:'G3',nome:'IA como ferramenta na Segurança do Trabalho'},
+  {id:'G4',nome:'Fadiga e acidentes do trabalho'},{id:'G5',nome:'Risco biológico na limpeza hospitalar'},{id:'G6',nome:'Riscos em postos de combustíveis'}];
+function demoDB(){ let d=null; try{ d=JSON.parse(store.get('labtcc_demo')||'null') }catch(e){} return d||{estado:{},registros:[]}; }
+function demoSave(d){ store.set('labtcc_demo',JSON.stringify(d)); }
+async function demoApi(b){
+  await new Promise(r=>setTimeout(r,120));
+  const u=DEMO_USUARIOS.find(x=>x.login===String(b.login||'').trim().toLowerCase() && x.senha===String(b.senha||''));
+  if(!u) throw new Error('Login ou senha inválidos');
+  const pub=x=>({login:x.login,nome:x.nome,grupo:x.grupo,papel:x.papel});
+  const d=demoDB(); const agora=new Date().toISOString();
+  const grupoAlvo = u.papel==='professor' ? (b.grupo||'') : u.grupo;
+  if(b.acao==='login'){
+    d.registros.push({em:agora,login:u.login,nome:u.nome,grupo:u.grupo,etapa:'',campo:'',chars:0,acao:'login'}); demoSave(d);
+    return {ok:true, usuario:pub(u), usuarios:DEMO_USUARIOS.filter(x=>u.papel==='professor'||x.grupo===u.grupo).map(pub), grupos:DEMO_GRUPOS};
+  }
+  if(b.acao==='estado'){ return {ok:true, campos:(d.estado[grupoAlvo]||{}), agora}; }
+  if(b.acao==='salvar'){
+    if(!grupoAlvo) throw new Error('Grupo não informado');
+    const g=d.estado[grupoAlvo]=d.estado[grupoAlvo]||{};
+    (b.itens||[]).forEach(it=>{ const v=String(it.valor??''); g[it.campo]={v,por:u.login,nome:u.nome,em:agora};
+      d.registros.push({em:agora,login:u.login,nome:u.nome,grupo:grupoAlvo,etapa:it.etapa||'',campo:it.campo,chars:v.length,acao:'salvar'}); });
+    demoSave(d); return {ok:true, agora};
+  }
+  if(b.acao==='painel'){
+    if(u.papel!=='professor') throw new Error('Acesso restrito ao professor');
+    const estado=[]; Object.entries(d.estado).forEach(([g,cs])=>Object.entries(cs).forEach(([c,o])=>estado.push([g,c,o.por,o.nome,o.em,String(o.v).length,(c.startsWith('status.')||c.startsWith('prof.'))?o.v:''])));
+    return {ok:true, usuarios:DEMO_USUARIOS.map(pub), grupos:DEMO_GRUPOS, estado, registros:d.registros.map(r=>[r.em,r.login,r.nome,r.grupo,r.etapa,r.campo,r.chars,r.acao])};
+  }
+  throw new Error('Ação desconhecida');
+}
+
+/* ---------- salvar (fila em lote) ---------- */
+const timers={};
+function salvar(k, v, etapa, imediato){
+  S.campos[k]={v:String(v), por:S.user.login, nome:S.user.nome, em:new Date().toISOString()};
+  S.dirty[k]=true; S.fila[k]={campo:k, valor:String(v), etapa:etapa||k.split('.')[0]};
+  clearTimeout(timers[k]);
+  timers[k]=setTimeout(enviarFila, imediato?50:1300);
+  marcaSync('Salvando…');
+}
+async function enviarFila(){
+  if(S.enviando) { setTimeout(enviarFila,600); return; }
+  const itens=Object.values(S.fila); if(!itens.length) return;
+  S.fila={}; S.enviando=true;
+  try{
+    await api('salvar',{grupo:S.grupo, itens});
+    itens.forEach(it=>{ if(!S.fila[it.campo]) delete S.dirty[it.campo]; atualizaMeta(it.campo); });
+    S.erroSync=null; S.ultimaSync=new Date(); marcaSync();
+  }catch(e){
+    itens.forEach(it=>{ if(!S.fila[it.campo]) S.fila[it.campo]=it; });
+    S.erroSync=e.message; marcaSync(); setTimeout(enviarFila,6000);
+  }finally{ S.enviando=false; }
+  try{ store.set('labtcc_pend_'+S.user.login+'_'+S.grupo, JSON.stringify(S.fila)); }catch(e){}
+  renderSidebar(); refreshDyn();
+}
+function marcaSync(txt){
+  const el=$('#sync'); if(!el) return;
+  if(S.erroSync){ el.className='sync erro'; el.textContent='⚠ Sem conexão — as alterações serão reenviadas'; return; }
+  el.className='sync';
+  el.textContent = txt || (S.ultimaSync ? 'Sincronizado às '+S.ultimaSync.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) : '—');
+}
+window.addEventListener('beforeunload',e=>{ if(Object.keys(S.fila).length){ e.preventDefault(); e.returnValue=''; } });
+
+/* ---------- carregar estado / polling ---------- */
+async function carregarEstado(){
+  const r=await api('estado',{grupo:S.grupo});
+  const mudados=[];
+  Object.entries(r.campos||{}).forEach(([k,o])=>{
+    if(S.dirty[k]) return;
+    const atual=S.campos[k];
+    if(!atual || atual.v!==String(o.v) || atual.em!==o.em){ S.campos[k]={v:String(o.v),por:o.por,nome:o.nome,em:o.em}; if(atual) mudados.push(k); }
+  });
+  S.ultimaSync=new Date(); S.erroSync=null; marcaSync();
+  return mudados;
+}
+let pollTimer=null;
+function iniciarPoll(){
+  clearInterval(pollTimer);
+  pollTimer=setInterval(async()=>{
+    if(document.hidden || !S.grupo) return;
+    try{
+      const mud=await carregarEstado();
+      if(mud.length) aplicarMudancasExternas(mud);
+    }catch(e){ S.erroSync=e.message; marcaSync(); }
+  }, POLL_MS + Math.random()*4000);
+}
+function aplicarMudancasExternas(ks){
+  let rerenderCols=new Set(); let rerender=false;
+  ks.forEach(k=>{
+    const el=$(`[data-k="${CSS.escape(k)}"]`);
+    if(el){
+      if(document.activeElement===el) return;
+      if(el.type==='radio'||el.type==='checkbox'){ rerender=true; return; }
+      el.value=val(k); atualizaMeta(k,true);
+    }
+    const m=k.match(/^([a-z]+):/); if(m) rerenderCols.add(m[1]);
+    if(k.startsWith('status.')||k.startsWith('prof.')||k.endsWith('.chk')||k.startsWith('ia.')) rerender=true;
+  });
+  rerenderCols.forEach(p=>{ const box=$(`[data-col="${p}"]`); if(box && !box.contains(document.activeElement)) renderColecao(p); });
+  if(rerender && !$('#conteudo').contains(document.activeElement)) renderVista();
+  renderSidebar(); refreshDyn();
+}
+
+/* =====================================================================
+   LOGIN / SESSÃO
+   ===================================================================== */
+$('#form-login').addEventListener('submit', async ev=>{
+  ev.preventDefault();
+  const login=$('#lg-login').value.trim().toLowerCase(), senha=$('#lg-senha').value;
+  $('#lg-erro').textContent=''; $('#lg-btn').disabled=true; $('#lg-btn').textContent='Entrando…';
+  try{ await entrar({login,senha}); }catch(e){ $('#lg-erro').textContent=e.message; }
+  finally{ $('#lg-btn').disabled=false; $('#lg-btn').textContent='Entrar'; }
+});
+async function entrar(cred){
+  S.cred=cred;
+  const r=await api('login');
+  S.user=r.usuario; S.membros=r.usuarios||[]; S.grupos=r.grupos||[];
+  sess.set(cred);
+  $('#tela-login').classList.add('hidden'); $('#app').classList.remove('hidden');
+  if(isProf()){
+    $('#sb-prof').classList.remove('hidden');
+    const sel=$('#sb-sel-grupo'); sel.classList.remove('hidden');
+    sel.innerHTML=S.grupos.map(g=>`<option value="${esc(g.id)}">${esc(g.id)} — ${esc(g.nome)}</option>`).join('');
+    sel.onchange=()=>trocarGrupo(sel.value,'e0');
+    S.grupo=S.grupos[0]?.id||null; S.vista='painel';
+  }else{
+    S.grupo=S.user.grupo; S.vista='e0';
+  }
+  // recupera envios pendentes deste computador
+  try{ const p=JSON.parse(store.get('labtcc_pend_'+S.user.login+'_'+S.grupo)||'{}'); if(Object.keys(p).length){ S.fila=p; Object.values(p).forEach(it=>{S.dirty[it.campo]=true;}); } }catch(e){}
+  if(S.grupo) await carregarEstado();
+  Object.values(S.fila).forEach(it=>{ S.campos[it.campo]={v:it.valor,por:S.user.login,nome:S.user.nome,em:new Date().toISOString()}; });
+  if(Object.keys(S.fila).length) enviarFila();
+  // primeira etapa não concluída
+  if(!isProf()){ const prox=ETAPAS.find(e=>!concluida(e.id) && !bloqueada(e)); if(prox) S.vista=prox.id; }
+  renderSidebar(); renderVista(); iniciarPoll();
+}
+async function trocarGrupo(g, vista){
+  S.grupo=g; S.campos={}; S.dirty={}; S.fila={};
+  $('#sb-sel-grupo').value=g;
+  await carregarEstado(); S.vista=vista||S.vista; if(S.vista==='painel') S.vista='e0';
+  renderSidebar(); renderVista();
+}
+$('#bt-sair').onclick=async()=>{
+  if(Object.keys(S.fila).length){ await enviarFila(); }
+  sess.del(); location.reload();
+};
+if(!API_URL) $('#lg-demo').classList.remove('hidden');
+(async()=>{ const c=sess.get(); if(c){ try{ await entrar(c); }catch(e){ sess.del(); } } })();
+
+/* =====================================================================
+   SIDEBAR
+   ===================================================================== */
+function renderSidebar(){
+  const g=S.grupos.find(x=>x.id===S.grupo);
+  $('#sb-grupo').textContent = S.grupo ? (S.grupo+(g?' — '+g.nome:'')) : '—';
+  $('#sb-quem').textContent = S.user.nome + (isProf()?' · professor':'');
+  const ic={ok:'✓',and:'',lock:'',novo:''};
+  $('#sb-etapas').innerHTML = ETAPAS.map((e,i)=>{
+    const st=statusEtapa(e);
+    const conteudo = st==='ok'?'✓':(st==='lock'?'🔒':String(i));
+    return `<li><button data-ir="${e.id}" class="${S.vista===e.id?'ativo':''}"><span class="ic ${st}" ${st==='lock'?'style="font-size:10px"':''}>${conteudo}</span><span>${esc(e.titulo)}</span></button></li>`;
+  }).join('');
+  $$('#sidebar [data-ir]').forEach(b=>{ b.classList.toggle('ativo', b.dataset.ir===S.vista); b.onclick=()=>ir(b.dataset.ir); });
+  $('#tm-titulo').textContent = ET[S.vista]?.titulo || (S.vista==='painel'?'Painel da turma':S.vista==='ia'?'Uso responsável de IA':S.vista==='abnt'?'Normas ABNT':'');
+}
+function ir(v){
+  S.vista=v; renderSidebar(); renderVista(); window.scrollTo(0,0);
+  $('#sidebar').classList.remove('aberto');
+}
+$('#bt-menu').onclick=()=>$('#sidebar').classList.toggle('aberto');
+
+/* =====================================================================
+   RENDER DA VISTA
+   ===================================================================== */
+function renderVista(){
+  const c=$('#conteudo'); let h='';
+  if(!API_URL) h+=`<div class="demo-bar">Modo demonstração: os dados ficam salvos apenas neste navegador. Para uso em aula, conecte a planilha (veja o guia de instalação).</div>`;
+  if(S.vista==='painel'){ c.innerHTML=h+'<div id="painel">Carregando painel…</div>'; renderPainel(); return; }
+  if(S.vista==='ia'){ c.innerHTML=h+paginaIA(); return; }
+  if(S.vista==='abnt'){ c.innerHTML=h+paginaABNT(); return; }
+  const et=ET[S.vista]; if(!et){ c.innerHTML=h; return; }
+  const st=statusEtapa(et); const lock=st==='lock';
+  const idx=ETAPAS.indexOf(et);
+  const pillTxt={ok:'Concluída',and:'Em andamento',lock:'Bloqueada',novo:'Não iniciada'}[st];
+  h+=`<header class="et-head"><div class="et-num">Etapa ${idx}</div><h1>${esc(et.titulo)}</h1><p class="sub">${esc(et.sub)}</p>
+      <div class="et-meta"><span class="pill ${st}">${pillTxt}</span><span class="pill">Base: ${esc(et.gil)}</span></div></header>`;
+  // orientação do professor
+  if(isProf()){
+    h+=`<div class="prof-box"><div class="t">Orientação do professor para o ${esc(S.grupo)} nesta etapa (visível para o grupo)</div>
+        <textarea data-k="prof.${et.id}" rows="3" placeholder="Escreva um comentário para o grupo…">${esc(val('prof.'+et.id))}</textarea><div class="meta" data-meta="prof.${et.id}"></div></div>`;
+  }else if(val('prof.'+et.id)){
+    h+=`<div class="prof-box"><div class="t">💬 Orientação do professor</div>${nl2br(val('prof.'+et.id))}<div class="meta">${fmtData(S.campos['prof.'+et.id]?.em)}</div></div>`;
+  }
+  if(lock){
+    const falta=et.deps.filter(d=>!concluida(d)).map(d=>'Etapa '+num(d)+' — '+ET[d].titulo);
+    h+=`<div class="lock-banner">🔒 <b>Esta etapa ainda está bloqueada.</b> Antes, a equipe precisa concluir: ${esc(falta.join('; '))}. Vocês podem ler o conteúdo abaixo, mas ainda não podem preencher.</div>`;
+  }
+  h+=`<details class="entenda" ${st==='novo'||lock?'open':''}><summary>Entenda antes de preencher</summary><div class="corpo">${et.entenda}<div class="fonte-gil">Texto elaborado com base em: GIL, Antonio Carlos. <i>Como elaborar projetos de pesquisa</i>. 4. ed. São Paulo: Atlas, 2002 — ${esc(et.gil)}.</div></div></details>`;
+  h+=`<div class="card">${renderBlocos(et.blocos, et, lock)}</div>`;
+  h+=renderIAEtapa(et, lock);
+  // checklist
+  const chk=valArr(et.id+'.chk');
+  h+=`<section class="checklist"><h2>Checklist da etapa</h2><p class="ajuda" style="margin:0 0 8px;color:var(--muted);font-size:14px">Marquem só o que a equipe realmente verificou.</p>
+      <div class="opts">${et.checklist.map((c,i)=>`<label><input type="checkbox" data-k="${et.id}.chk" data-opt="${i}" ${chk.includes(String(i))?'checked':''} ${lock?'disabled':''}><span>${esc(c)}</span></label>`).join('')}</div>
+      <div class="meta" data-meta="${et.id}.chk"></div>
+      <div class="et-actions">${
+        concluida(et.id)
+        ? `<span class="pill ok">✓ Etapa concluída por ${esc(primeiroNome(S.campos['status.'+et.id]?.nome))} em ${fmtData(S.campos['status.'+et.id]?.em)}</span><button class="btn sec peq" id="bt-reabrir">Reabrir para edição</button>`
+        : `<button class="btn verde" id="bt-concluir" ${lock?'disabled':''}>Concluir etapa</button>`
+      }${idx<ETAPAS.length-1?`<button class="btn sec" id="bt-prox">Próxima etapa →</button>`:''}
+      ${isProf()?`<button class="btn sec peq" id="bt-liberar">${val('status.liberar')==='1'?'Rebloquear sequência para este grupo':'Liberar todas as etapas para este grupo'}</button>`:''}</div>
+      <div class="faltando" id="faltando"></div></section>`;
+  c.innerHTML=h;
+  ligarCampos(c, et);
+  refreshDyn(); atualizaTodasMetas();
+  $('#bt-concluir')?.addEventListener('click',()=>{
+    const f=faltando(et);
+    if(f.length){ $('#faltando').innerHTML='<b>Ainda falta:</b><ul>'+f.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>'; return; }
+    salvar('status.'+et.id,'concluida',et.id,true); toast('Etapa concluída! 🎉'); renderSidebar(); renderVista();
+  });
+  $('#bt-reabrir')?.addEventListener('click',()=>{ if(confirm('Reabrir esta etapa? As etapas seguintes continuam acessíveis.')){ salvar('status.'+et.id,'',et.id,true); renderSidebar(); renderVista(); } });
+  $('#bt-prox')?.addEventListener('click',()=>ir(ETAPAS[idx+1].id));
+  $('#bt-liberar')?.addEventListener('click',()=>{ salvar('status.liberar', val('status.liberar')==='1'?'':'1','sistema',true); renderSidebar(); renderVista(); });
+}
+
+function renderBlocos(bs, et, lock){
+  const dis=lock?'disabled':'';
+  return bs.map(b=>{
+    switch(b.t){
+      case 'h': return `<h3>${esc(b.txt)}</h3>${b.sub?`<p class="ajuda" style="margin:-2px 0 6px;color:var(--muted);font-size:14px">${esc(b.sub)}</p>`:''}`;
+      case 'info': return b.html;
+      case 'dyn': return `<div data-dyn="${b.nome}"></div>`;
+      case 'grid2': return `<div class="grid2">${renderBlocos(b.blocos,et,lock)}</div>`;
+      case 'grid3': return `<div class="grid3">${renderBlocos(b.blocos,et,lock)}</div>`;
+      case 'show': return `<div data-show="${esc(b.cond)}">${renderBlocos(b.blocos,et,lock)}</div>`;
+      case 'text': return `<div class="campo"><label for="f-${b.k}">${esc(b.l)}</label>${b.h?`<p class="ajuda">${esc(b.h)}</p>`:''}<input type="text" id="f-${b.k}" data-k="${b.k}" value="${esc(val(b.k))}" placeholder="${esc(b.ph||'')}" ${dis}><div class="meta" data-meta="${b.k}"></div></div>`;
+      case 'area': return `<div class="campo"><label for="f-${b.k}">${esc(b.l)}</label>${b.h?`<p class="ajuda">${esc(b.h)}</p>`:''}<textarea id="f-${b.k}" data-k="${b.k}" rows="${b.rows||3}" placeholder="${esc(b.ph||'')}" ${dis}>${esc(val(b.k))}</textarea><div class="meta" data-meta="${b.k}"></div></div>`;
+      case 'radio': return `<div class="campo"><span class="lbl">${esc(b.l)}</span>${b.h?`<p class="ajuda">${esc(b.h)}</p>`:''}<div class="opts">${b.opts.map(o=>`<label><input type="radio" name="r-${b.k}" data-k="${b.k}" value="${o.v}" ${val(b.k)===o.v?'checked':''} ${dis}><span>${esc(o.l)}${o.d?`<span class="od">${esc(o.d)}</span>`:''}</span></label>`).join('')}</div><div class="meta" data-meta="${b.k}"></div></div>`;
+      case 'checks': { const a=valArr(b.k); return `<div class="campo"><span class="lbl">${esc(b.l)}</span>${b.h?`<p class="ajuda">${esc(b.h)}</p>`:''}<div class="opts" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr))">${b.opts.map(o=>`<label><input type="checkbox" data-k="${b.k}" data-opt="${o.v}" ${a.includes(o.v)?'checked':''} ${dis}><span>${esc(o.l)}${o.d?`<span class="od">${esc(o.d)}</span>`:''}</span></label>`).join('')}</div><div class="meta" data-meta="${b.k}"></div></div>`; }
+      case 'verbos': return `<p class="ajuda" style="margin:6px 0 0;color:var(--muted);font-size:14px">Banco de verbos (clique para inserir no início do objetivo geral):</p><div class="chips">${VERBOS.map(v=>`<button type="button" class="chip" data-verbo="${v}" data-alvo="${b.alvo}" ${dis}>${v}</button>`).join('')}</div>`;
+      case 'secoes': return [1,2,3,4].map(i=>`<div class="card" style="margin:10px 0;background:#fbfcfe">
+          <h3 style="margin-top:0">Seção 2.${i} ${['— tema mais amplo','— nível intermediário','— tema mais específico','— opcional'][i-1]}</h3>
+          <div class="campo"><label for="f-e6.s${i}t">Título da seção 2.${i}</label><input type="text" id="f-e6.s${i}t" data-k="e6.s${i}t" value="${esc(val('e6.s'+i+'t'))}" ${dis}><div class="meta" data-meta="e6.s${i}t"></div></div>
+          <div class="campo"><label for="f-e6.s${i}d">O que esta seção vai discutir e por que ela é necessária</label><textarea id="f-e6.s${i}d" data-k="e6.s${i}d" rows="2" ${dis}>${esc(val('e6.s'+i+'d'))}</textarea><div class="meta" data-meta="e6.s${i}d"></div></div>
+          <div class="campo"><label for="f-e6.s${i}sub">Subseções 2.${i}.1, 2.${i}.2… (se houver necessidade; uma por linha)</label><textarea id="f-e6.s${i}sub" data-k="e6.s${i}sub" rows="2" ${dis}>${esc(val('e6.s'+i+'sub'))}</textarea><div class="meta" data-meta="e6.s${i}sub"></div></div>
+        </div>`).join('');
+      case 'col': return `<div data-col="${b.prefixo}" data-lock="${lock?1:0}"></div>`;
+      case 'cronoSugestao': return `<p style="margin-top:0"><button type="button" class="btn sec peq" id="bt-crono-sug" ${dis}>Inserir atividades típicas (para a equipe ajustar)</button></p>`;
+      case 'acoesProjeto': return `<div class="et-actions" style="margin:0 0 12px"><button type="button" class="btn" id="bt-doc">⬇ Baixar projeto (.doc para Word)</button><button type="button" class="btn sec" id="bt-teams">Mensagem de entrega para o Teams</button></div>`;
+      default: return '';
+    }
+  }).join('');
+}
+
+/* ---------- ligações de eventos ---------- */
+function ligarCampos(root, et){
+  $$('input[type=text][data-k],input[type=number][data-k],textarea[data-k]',root).forEach(el=>{
+    el.addEventListener('input',()=>{ salvar(el.dataset.k, el.value, et.id); refreshDyn(); });
+    el.addEventListener('blur',()=>{ if(S.fila[el.dataset.k]){ clearTimeout(timers[el.dataset.k]); enviarFila(); } });
+  });
+  $$('input[type=radio][data-k]',root).forEach(el=>el.addEventListener('change',()=>{ salvar(el.dataset.k, el.value, et.id, true); refreshDyn(); renderSidebar(); }));
+  $$('input[type=checkbox][data-k]',root).forEach(el=>el.addEventListener('change',()=>{
+    const k=el.dataset.k; const a=new Set(valArr(k)); el.checked?a.add(el.dataset.opt):a.delete(el.dataset.opt);
+    salvar(k, JSON.stringify([...a]), et.id, true); refreshDyn(); renderSidebar();
+  }));
+  $$('[data-verbo]',root).forEach(b=>b.addEventListener('click',()=>{
+    const ta=$(`[data-k="${b.dataset.alvo}"]`); if(!ta) return;
+    const resto=ta.value.replace(/^\s*(\S+)\s*/, m=> VERBOS.some(v=>m.trim().toLowerCase()===v.toLowerCase())?'':m);
+    ta.value=b.dataset.verbo+' '+resto.trimStart(); ta.focus(); salvar(ta.dataset.k, ta.value, et.id); refreshDyn();
+  }));
+  $$('[data-col]',root).forEach(box=>renderColecao(box.dataset.col));
+  $('#bt-crono-sug',root)?.addEventListener('click',()=>{
+    if(colItens('crono').length && !confirm('Já existem atividades. Inserir as típicas mesmo assim?')) return;
+    const sug=[
+      ['Formulação do problema, objetivos e hipóteses','Planejamento',[0]],
+      ['Levantamento bibliográfico e fichamento','Planejamento',[0,1]],
+      ['Elaboração do instrumento de coleta','Planejamento',[1]],
+      ['Redação e entrega do projeto','Planejamento',[1,2]],
+      ['Pré-teste e ajuste do instrumento','Desenvolvimento',[3]],
+      ['Coleta de dados','Desenvolvimento',[4,5]],
+      ['Análise e interpretação dos dados','Desenvolvimento',[5,6]],
+      ['Redação do artigo','Desenvolvimento',[6,7]],
+      ['Revisão final e apresentação','Desenvolvimento',[7]]];
+    sug.forEach((s,i)=>salvar('crono:'+novoId(i), JSON.stringify({atividade:s[0],fase:s[1],resp:'',meses:s[2].map(String)}),'e7'));
+    renderColecao('crono'); refreshDyn(); renderSidebar();
+  });
+  $('#bt-doc',root)?.addEventListener('click',baixarDoc);
+  $('#bt-teams',root)?.addEventListener('click',mensagemTeams);
+  $$('[data-quiz]',root).forEach(b=>b.addEventListener('click',()=>quizResponder(b)));
+}
+function novoId(i=0){ return Date.now().toString(36)+(i?'-'+i:'')+Math.random().toString(36).slice(2,6); }
+
+/* ---------- metadados de autoria ---------- */
+function atualizaMeta(k, flash){
+  const el=$(`[data-meta="${CSS.escape(k)}"]`); if(!el) return;
+  const o=S.campos[k];
+  if(!o || !o.em){ el.textContent=''; return; }
+  const pend = S.dirty[k] ? ' · salvando…' : '';
+  el.textContent = '✎ '+(o.nome||o.por)+' · '+fmtData(o.em)+pend;
+  if(flash){ el.classList.add('flash'); el.textContent='↻ atualizado por '+(o.nome||o.por)+' · '+fmtData(o.em); setTimeout(()=>el.classList.remove('flash'),4000); }
+}
+function atualizaTodasMetas(){ $$('[data-meta]').forEach(el=>atualizaMeta(el.dataset.meta)); }
+
+/* ---------- coleções ---------- */
+function colCfg(prefixo){ let cfg=null; ETAPAS.forEach(e=>{ const walk=bs=>bs.forEach(b=>{ if(b.t==='col'&&b.prefixo===prefixo) cfg={...b,etapa:e.id}; if(b.blocos) walk(b.blocos); }); walk(e.blocos); }); return cfg; }
+function renderColecao(prefixo){
+  const box=$(`[data-col="${prefixo}"]`); if(!box) return;
+  const cfg=colCfg(prefixo); const lock=box.dataset.lock==='1'; const dis=lock?'disabled':'';
+  const itens=colItens(prefixo);
+  let h=`<div class="col-lista">`;
+  if(!itens.length) h+=`<div class="vazio">Nenhum item ainda.</div>`;
+  itens.forEach(o=>{
+    const k=o.__k; const aberto=S.abertos.has(k);
+    h+=`<details class="col-card" data-ck="${esc(k)}" ${aberto?'open':''}><summary><span class="ct">${esc(cfg.resumo(o))}</span><span class="cm">✎ ${esc(o.__por||'')} · ${fmtData(o.__em)}</span></summary><div class="cc">`;
+    cfg.campos.forEach(c=>{
+      const v=o[c.f]??'';
+      h+=`<div class="cf"><label>${esc(c.l)}</label>${c.ajuda?`<p class="ajuda">${esc(c.ajuda)}</p>`:''}`;
+      if(c.tipo==='area') h+=`<textarea data-cf="${c.f}" rows="${c.rows||3}" placeholder="${esc(c.ph||'')}" ${dis}>${esc(v)}</textarea>`;
+      else if(c.tipo==='select') h+=`<select data-cf="${c.f}" ${dis}><option value="">— escolher —</option>${c.ops.map(op=>`<option ${v===op?'selected':''}>${esc(op)}</option>`).join('')}</select>`;
+      else if(c.tipo==='meses'){ const ms=Array.isArray(v)?v:[]; h+=`<div class="meses">${MESES.map((m,i)=>`<label><input type="checkbox" data-cf="meses" data-mes="${i}" ${ms.includes(String(i))?'checked':''} ${dis}>${m}</label>`).join('')}</div>`; }
+      else h+=`<input type="${c.tipo==='number'?'number':'text'}" ${c.tipo==='number'?'step="any" min="0"':''} data-cf="${c.f}" value="${esc(v)}" placeholder="${esc(c.ph||'')}" ${dis}>`;
+      if(c.checar) h+=`<div class="refcheck" data-chk="${c.f}">${checarCampo(c.checar, v, o)}</div>`;
+      if(cfg.montador && (c.f==='ref'||c.f==='ident')) h+=`<div style="margin-top:6px"><button type="button" class="btn sec peq" data-montar="${esc(k)}" ${dis}>🧩 Montar referência ABNT</button></div>`;
+      h+=`</div>`;
+    });
+    h+=`<div style="text-align:right"><button type="button" class="btn perigo peq" data-del="${esc(k)}" ${dis}>Excluir</button></div></div></details>`;
+  });
+  h+=`</div><button type="button" class="btn sec peq" data-add="${prefixo}" ${dis}>${esc(cfg.rotuloNovo)}</button>`;
+  box.innerHTML=h;
+  $$('details.col-card',box).forEach(d=>{
+    const k=d.dataset.ck;
+    d.addEventListener('toggle',()=>{ d.open?S.abertos.add(k):S.abertos.delete(k); });
+    const gravar=(imediato)=>{
+      const o={}; cfg.campos.forEach(c=>{
+        if(c.tipo==='meses') o.meses=$$('[data-mes]',d).filter(x=>x.checked).map(x=>x.dataset.mes);
+        else o[c.f]=$(`[data-cf="${c.f}"]`,d).value;
+      });
+      salvar(k, JSON.stringify(o), cfg.etapa, imediato);
+      const s=$('summary .ct',d); s.textContent=cfg.resumo(o); refreshDyn();
+      cfg.campos.filter(c=>c.checar).forEach(c=>{ const el=$(`[data-chk="${c.f}"]`,d); if(el) el.innerHTML=checarCampo(c.checar,o[c.f]||'',o); });
+    };
+    d._gravar=gravar;
+    $('[data-montar]',d)?.addEventListener('click',()=>montadorRef(d, cfg));
+    $$('input[type=text],input[type=number],textarea',d).forEach(el=>{ el.addEventListener('input',()=>gravar(false)); el.addEventListener('blur',()=>{ if(S.fila[k]) enviarFila(); }); });
+    $$('select,input[type=checkbox]',d).forEach(el=>el.addEventListener('change',()=>gravar(true)));
+  });
+  $$('[data-del]',box).forEach(b=>b.addEventListener('click',()=>{
+    if(!confirm('Excluir este item? Ele continuará no histórico da planilha.')) return;
+    salvar(b.dataset.del,'',cfg.etapa,true); renderColecao(prefixo); refreshDyn(); renderSidebar();
+  }));
+  $('[data-add]',box)?.addEventListener('click',()=>{
+    const k=prefixo+':'+novoId(); S.abertos.add(k);
+    salvar(k, JSON.stringify({}), cfg.etapa, true);
+    renderColecao(prefixo); renderSidebar();
+    const d=$(`[data-ck="${CSS.escape(k)}"]`); d?.querySelector('input,textarea,select')?.focus();
+  });
+}
+
+/* =====================================================================
+   BLOCOS DINÂMICOS
+   ===================================================================== */
+const DYNS = {
+  quiz1(){
+    const qs=[
+      ['"É certo exigir que o eletricista trabalhe sozinho em manutenção?"','valor','Pergunta se algo é certo: julgamento de valor.'],
+      ['"Como diminuir o ruído em uma marcenaria?"','engenharia','Pergunta como fazer algo: problema de "engenharia". Pode virar proposta, mas não é pergunta de pesquisa.'],
+      ['"Qual a frequência de uso do protetor auricular entre marceneiros de Lorena/SP?"','cientifico','Envolve algo observável e mensurável (frequência de uso) e está delimitado.'],
+      ['"A empresa deve demitir quem não usa EPI?"','valor','"Deve" indica julgamento de valor.'],
+      ['"Em que medida o tempo de experiência está associado ao número de quase-acidentes relatados por soldadores?"','cientifico','Relaciona duas variáveis observáveis.'],
+    ];
+    return `<div class="card" style="background:#fbfcfe;margin-top:0"><h3 style="margin-top:0">Aquecimento: que tipo de problema é?</h3>
+      <p class="ajuda" style="color:var(--muted);font-size:14px;margin:0">Classifiquem cada pergunta. Este exercício não é salvo: serve para treinar o olhar.</p>
+      ${qs.map((q,i)=>`<div class="quiz-item"><div class="q">${i+1}. ${esc(q[0])}</div><div class="bt">
+        ${[['cientifico','Científico'],['valor','De valor'],['engenharia','De engenharia']].map(([v,l])=>`<button type="button" class="chip" data-quiz="${i}" data-resp="${v}" data-certa="${q[1]}" data-exp="${esc(q[2])}">${l}</button>`).join('')}
+        </div><div class="fb" id="qfb-${i}"></div></div>`).join('')}</div>`;
+  },
+  lembraProblema(){ const p=val('e1.problema'); return p?`<div class="ex bom" style="margin-top:0"><b>Pergunta de pesquisa da equipe:</b> ${esc(p)}</div>`:''; },
+  lembraObjetivo(){ const p=val('e2.obj_geral'); return p?`<div class="ex bom" style="margin-top:0"><b>Objetivo geral:</b> ${esc(p)}</div>`:''; },
+  lembraClassif(){
+    const n={exploratoria:'exploratória',descritiva:'descritiva',explicativa:'explicativa'}[val('e4.nivel')];
+    const p=valArr('e4.proc').map(x=>({bibliografica:'bibliográfica',documental:'documental',experimental:'experimental',expostfacto:'ex-post facto',levantamento:'levantamento',campo:'estudo de campo',caso:'estudo de caso',acao:'pesquisa-ação'}[x])).join(', ');
+    return (n||p)?`<div class="ex bom" style="margin-top:0"><b>Classificação da equipe:</b> pesquisa ${esc(n||'?')}; procedimentos: ${esc(p||'?')}.</div>`:'';
+  },
+  sequenciaIntro(){
+    const passo=(r,txt,falta)=>`<div class="p ${txt?'':'falta'}"><div class="r">${r}</div>${txt?nl2br(txt):esc(falta)}</div>`;
+    return `<div class="seq">
+      ${passo('Contexto',val('e3.contexto'),'Preencham o contexto acima.')}
+      ${passo('Panorama da literatura',val('e3.panorama'),'Preencham o panorama acima.')}
+      ${passo('Lacuna → Problema',[val('e3.lacuna'),val('e1.problema')?'Pergunta: '+val('e1.problema'):''].filter(Boolean).join('\n\n'),'Lacuna (acima) e pergunta de pesquisa (etapa 1).')}
+      ${passo('Importância',[val('e3.dados'),val('e3.importancia'),val('e3.contribuicao')].filter(Boolean).join('\n\n'),'Preencham dados, importância e contribuição acima.')}
+      ${passo('Objetivo',val('e2.obj_geral'),'Vem da etapa 2 (objetivo geral).')}
+    </div>`;
+  },
+  dicaGrupo(){
+    const d=DICAS[S.grupo];
+    let h='';
+    if(d) h+=`<div class="dica-grupo"><b>Pontos de partida para o ${esc(S.grupo)}</b> (sugestões do professor; confiram tudo no texto oficial e ampliem a busca)<br>
+      <b>Combinações de busca:</b> ${d.pal.map(esc).join(' · ')}<br><b>Normas e leis prováveis:</b> ${d.normas.map(esc).join(' · ')}</div>`;
+    h+=`<p class="links" style="font-size:14.5px"><b>Bases para consultar:</b><br>${BASES.map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener">${esc(n)}</a>`).join('')}</p>`;
+    return h;
+  },
+  funil(){
+    const cores=['#12355b','#1c5a94','#2a6fdb','#5b8fe0'];
+    const larg=[100,84,68,54];
+    const fich=colItens('fich'), nor=colItens('norma');
+    const niveis=[1,2,3,4].map(i=>({i,t:val('e6.s'+i+'t')})).filter(x=>x.t||x.i<=3);
+    return `<div class="funil">${niveis.map((x,j)=>{
+      const s='2.'+x.i; const nf=fich.filter(o=>o.secao===s).length, nn=nor.filter(o=>o.secao===s).length;
+      return `<div class="nv" style="width:${larg[j]}%;background:${cores[j]}"><div class="n">Seção ${s} ${['· mais amplo','· intermediário','· mais específico','· opcional'][x.i-1]}</div><div class="t">${esc(x.t||'(sem título)')}</div><div class="c">${nf} fichamento(s) · ${nn} norma(s)</div></div>`;
+    }).join('')}</div>`;
+  },
+  matriz(){
+    const fich=colItens('fich'), nor=colItens('norma');
+    if(!fich.length && !nor.length) return `<div class="vazio">A matriz aparece quando houver fichamentos ou normas cadastrados.</div>`;
+    let h='';
+    [...OP_SECAO,''].forEach(s=>{
+      const f=fich.filter(o=>(o.secao||'')===s), n=nor.filter(o=>(o.secao||'')===s);
+      if(!f.length && !n.length) return;
+      const tit = s ? ('Seção '+s+(val('e6.s'+s.slice(2)+'t')?' — '+val('e6.s'+s.slice(2)+'t'):'')) : 'Sem seção definida';
+      h+=`<h3>${esc(tit)}</h3><div class="tbl-scroll"><table class="tbl"><tr><th style="width:38%">Fonte</th><th>O que diz</th><th>Como ajuda o trabalho</th></tr>`;
+      n.forEach(o=>h+=`<tr><td>${fmtRef(o.ident||'')}<br><small>${esc(o.itens||'')}</small></td><td>${nl2br(o.estabelece||'')}</td><td>—</td></tr>`);
+      f.forEach(o=>h+=`<tr><td>${fmtRef(o.ref||'')}${o.chamada?`<br><small>Chamada: ${esc(o.chamada)}</small>`:''}</td><td>${nl2br(o.resultados||'')}</td><td>${nl2br(o.contribuicao||'')}</td></tr>`);
+      h+=`</table></div>`;
+    });
+    return h;
+  },
+  gantt(){ const t=ganttHTML(false); return t||`<div class="vazio">Adicionem atividades e marquem os meses.</div>`; },
+  orcamento(){
+    const it=colItens('custo'); if(!it.length) return '';
+    const tot=it.reduce((s,o)=>s+num(o.qtd)*num(o.unit),0);
+    return `<div class="tbl-scroll"><table class="tbl"><tr><th>Categoria</th><th>Item</th><th>Qtd.</th><th>Unit.</th><th>Total</th></tr>
+      ${it.map(o=>`<tr><td>${esc(o.cat||'')}</td><td>${esc(o.item||'')}</td><td class="num">${esc(o.qtd||'')}</td><td class="num">${moeda(num(o.unit))}</td><td class="num">${moeda(num(o.qtd)*num(o.unit))}</td></tr>`).join('')}
+      <tr><td colspan="4"><b>Subtotal</b></td><td class="num"><b>${moeda(tot)}</b></td></tr>
+      <tr><td colspan="4">Reserva para imprevistos (10%)</td><td class="num">${moeda(tot*.1)}</td></tr>
+      <tr><td colspan="4"><b>Total estimado</b></td><td class="num"><b>${moeda(tot*1.1)}</b></td></tr></table></div>`;
+  },
+  completude(){
+    return `<div class="tbl-scroll"><table class="tbl"><tr><th>Etapa</th><th>Situação</th><th>Concluída por</th></tr>${ETAPAS.slice(0,9).map((e,i)=>{
+      const st=statusEtapa(e); const o=S.campos['status.'+e.id];
+      return `<tr><td>${i}. ${esc(e.titulo)}</td><td><span class="pill ${st}">${{ok:'Concluída',and:'Em andamento',lock:'Bloqueada',novo:'Não iniciada'}[st]}</span></td><td>${st==='ok'?esc(o?.nome||'')+' · '+fmtData(o?.em):''}</td></tr>`;
+    }).join('')}</table></div>`;
+  },
+  projetoArtigo(){
+    const bib=val('e4.biblio_pura')==='sim';
+    const linhas = bib ? [
+      ['1. Introdução','Contexto, problema, importância e objetivo (etapas 1, 2 e 3)'],
+      ['2. Metodologia de pesquisa','Classificação e procedimentos da pesquisa bibliográfica (etapas 4, 5 e 6a)'],
+      ['3. Fundamentação teórica (desenvolvimento)','Arquitetura 3.1 → 3.3 e fichamentos (etapa 6): aqui está o desenvolvimento da pesquisa bibliográfica'],
+      ['4. Resultados e discussão','Síntese do que a literatura mostra em relação aos objetivos'],
+      ['5. Conclusão','Resposta à pergunta de pesquisa']]
+    : [
+      ['1. Introdução','Contexto → problema → importância → objetivo (etapas 1, 2 e 3)'],
+      ['2. Fundamentação teórica','Texto introdutório (critérios de seleção) + seções 2.1 → 2.3/2.4 (etapa 6)'],
+      ['3. Metodologia de pesquisa','Classificação, universo, amostra, instrumento e plano de análise (etapas 4 e 5)'],
+      ['4. Resultados e discussão','<i>Próximo semestre:</i> dados coletados, organizados e comparados com a fundamentação'],
+      ['5. Conclusão','<i>Próximo semestre:</i> resposta à pergunta e propostas viáveis']];
+    return `<p style="margin-top:0">Estrutura do artigo que a equipe vai escrever no desenvolvimento${bib?' (pesquisa essencialmente bibliográfica)':''}: Título · Autores e professor orientador · Resumo · Palavras-chave e as seções abaixo.</p>
+      <div class="tbl-scroll"><table class="tbl"><tr><th>Seção do artigo</th><th>De onde vem</th></tr>${linhas.map(l=>`<tr><td><b>${l[0]}</b></td><td>${l[1]}</td></tr>`).join('')}</table></div>`;
+  },
+  projeto(){ return `<div class="doc">${projetoHTML()}</div>`; },
+  contaResumo(){
+    const t=val('e9.resumo').trim(); if(!t) return '';
+    const n=t.split(/\s+/).filter(Boolean).length; const av=[];
+    if(/\n\s*\S/.test(t)) av.push('O resumo deve ser um parágrafo único.');
+    if(/\b(nós|nosso|nossa|nossos|nossas|eu|meu|minha)\b/i.test(t)) av.push('Usem a 3ª pessoa: "este projeto propõe…", "pretende-se…".');
+    if(/^\s*[-•*\d]+[.)]?\s/m.test(t)) av.push('Não usem tópicos ou enumeração.');
+    const cor = n>=100&&n<=250 ? 'var(--green)' : '#8a4a10';
+    return `<div style="font-size:13.5px;margin:-8px 0 10px"><span style="color:${cor};font-weight:700">${n} palavras</span> <span style="color:var(--muted)">(no artigo: 100 a 250)</span>${av.map(a=>'<br><span style="color:#8a4a10">⚠ '+esc(a)+'</span>').join('')}</div>`;
+  },
+  checaPalavras(){
+    const t=val('e9.palavras').trim(); if(!t) return '';
+    const av=[]; const termos=t.replace(/^palavras-chave:\s*/i,'').replace(/\.$/,'').split(';').map(x=>x.trim()).filter(Boolean);
+    if(/^palavras-chave/i.test(t)) av.push('Não precisa escrever "Palavras-chave:" — o sistema acrescenta.');
+    if(!t.includes(';') && termos.length<2) av.push('Separem os termos com ponto e vírgula.');
+    if(t.includes(',') && !t.includes(';')) av.push('A separação é com ponto e vírgula, não com vírgula.');
+    if(!/\.$/.test(t)) av.push('Finalizem com ponto.');
+    termos.forEach(x=>{ if(/^[A-ZÁ-Ú][a-zá-ú]/.test(x)) av.push(`"${x}": iniciais minúsculas, exceto nomes próprios e siglas.`); });
+    if(termos.length<3||termos.length>5) av.push(`São ${termos.length} termo(s); recomenda-se de 3 a 5.`);
+    return `<div style="font-size:13.5px;margin:-8px 0 10px">${av.length?av.map(a=>'<span style="color:#8a4a10">⚠ '+esc(a)+'</span>').join('<br>'):'<span style="color:var(--green)">✓ Formato conforme a NBR 6028.</span>'}</div>`;
+  },
+};
+function refreshDyn(){
+  $$('[data-dyn]').forEach(el=>{
+    const n=el.dataset.dyn; if(!DYNS[n]) return;
+    if(n==='quiz1' && el.dataset.ok) return; // não reinicia o exercício
+    el.innerHTML=DYNS[n](); if(n==='quiz1'){ el.dataset.ok=1; $$('[data-quiz]',el).forEach(b=>b.addEventListener('click',()=>quizResponder(b))); }
+  });
+  $$('[data-show]').forEach(el=>{ const [k,v]=el.dataset.show.split('='); el.classList.toggle('hidden', val(k)!==v); });
+}
+function quizResponder(b){
+  const fb=$('#qfb-'+b.dataset.quiz); const ok=b.dataset.resp===b.dataset.certa;
+  fb.className='fb '+(ok?'ok':'no'); fb.textContent=(ok?'✓ Isso. ':'✗ Não exatamente. ')+b.dataset.exp;
+}
+
+/* ---------- gantt ---------- */
+function ganttHTML(paraDoc){
+  const it=colItens('crono'); if(!it.length) return '';
+  const ord=it.slice().sort((a,b)=>(a.fase==='Desenvolvimento')-(b.fase==='Desenvolvimento') || Math.min(...(a.meses||[]).map(Number),99)-Math.min(...(b.meses||[]).map(Number),99));
+  const on = paraDoc ? (d)=>`style="background:${d?'#d9731f':'#2a6fdb'}"` : ()=>'';
+  return `<div class="tbl-scroll"><table class="tbl gantt" ${paraDoc?'border="1" cellspacing="0" cellpadding="4" style="border-collapse:collapse;width:100%"':''}><tr><th>Atividade</th><th>Responsável</th>${MESES.map(m=>`<th class="m">${m}</th>`).join('')}</tr>
+    ${ord.map(o=>{ const dev=o.fase==='Desenvolvimento'; const ms=(o.meses||[]).map(String);
+      return `<tr><td>${esc(o.atividade||'')}<br><small style="color:#5b6878">${esc(o.fase||'')}</small></td><td>${esc(o.resp||'')}</td>${MESES.map((m,i)=>ms.includes(String(i))?`<td class="m on ${dev?'dev':''}" ${on(dev)}>&nbsp;</td>`:`<td class="m"></td>`).join('')}</tr>`; }).join('')}
+  </table></div>`;
+}
+
+/* =====================================================================
+   PROJETO MONTADO
+   ===================================================================== */
+function P(k, rot){ const v=val(k); return v?`<p>${nl2br(v)}</p>`:`<p><span class="pend">[${esc(rot||LAB[k]||k)} — a preencher]</span></p>`; }
+function projetoHTML(){
+  const g=S.grupos.find(x=>x.id===S.grupo);
+  const autores=S.membros.filter(m=>m.grupo===S.grupo && m.papel!=='professor').map(m=>m.nome);
+  const nivelTxt={exploratoria:'exploratória',descritiva:'descritiva',explicativa:'explicativa'}[val('e4.nivel')];
+  const procMap={bibliografica:'bibliográfica',documental:'documental',experimental:'experimental',expostfacto:'ex-post facto',levantamento:'levantamento',campo:'estudo de campo',caso:'estudo de caso',acao:'pesquisa-ação'};
+  const tecMap={questionario:'questionário',entrevista:'entrevista',formulario:'formulário',observacao:'observação sistemática',documental:'análise documental',checklist:'lista de verificação baseada em NR',medicao:'medição ambiental',foto:'registro fotográfico',bibliografica:'fontes bibliográficas'};
+  const amMap={aleatoria:'aleatória simples',sistematica:'sistemática',estratificada:'estratificada',conglomerados:'por conglomerados',cotas:'por cotas',intencional:'intencional (não probabilística)',na:'não se aplica'};
+  const abMap={quali:'qualitativa',quanti:'quantitativa',mista:'quali-quantitativa'};
+  const fich=colItens('fich'), nor=colItens('norma'), custos=colItens('custo');
+  const oes=['e2.oe1','e2.oe2','e2.oe3','e2.oe4'].map(val).filter(Boolean);
+  let h=`<div class="capa"><div class="inst">${esc(INSTITUICAO)}<br>${esc(CURSO)}<br>Planejamento do Trabalho de Conclusão de Curso</div>
+    <h1>${esc(val('e1.titulo')||'[Título provisório — a preencher]')}</h1>
+    <p style="text-align:center">Projeto de pesquisa — ${esc(S.grupo||'')}${g?' · '+esc(g.nome):''}</p>
+    <p style="text-align:center"><b>Autores:</b> ${esc(autores.join('; ')||'—')}<br><b>Orientador:</b> ${esc(val('e0.orientador')||'—')}</p>
+    <p style="text-align:center">Lorena/SP, ${new Date().getFullYear()}</p></div>`;
+  h+=`<h2>Resumo</h2>${val('e9.resumo')?`<p>${esc(val('e9.resumo').replace(/\s*\n+\s*/g,' '))}</p>`:'<p><span class="pend">[resumo — a preencher na etapa 9]</span></p>'}<p><b>Palavras-chave:</b> ${val('e9.palavras')?esc(val('e9.palavras')):'<span class="pend">[a preencher]</span>'}</p>`;
+  h+=`<h2>1 Introdução</h2><h3>1.1 Contexto e justificativa</h3>${P('e3.contexto')}${P('e3.panorama')}${P('e3.lacuna')}${val('e3.dados')?`<p>${nl2br(val('e3.dados'))}</p>`:''}${P('e3.importancia')}${val('e3.contribuicao')?`<p>${nl2br(val('e3.contribuicao'))}</p>`:''}`;
+  h+=`<h3>1.2 Problema de pesquisa</h3>`;
+  const delim=[val('e1.onde')&&('local: '+val('e1.onde')), val('e1.quem')&&('sujeitos/objeto: '+val('e1.quem')), val('e1.quando')&&('período: '+val('e1.quando'))].filter(Boolean).join('; ');
+  if(delim) h+=`<p>Delimitação do estudo — ${esc(delim)}.</p>`;
+  h+=`<p><b>Pergunta de pesquisa:</b> ${val('e1.problema')?esc(val('e1.problema')):'<span class="pend">[a preencher]</span>'}</p>`;
+  h+=`<h3>1.3 Objetivos</h3><p><b>Objetivo geral:</b> ${val('e2.obj_geral')?esc(val('e2.obj_geral')):'<span class="pend">[a preencher]</span>'}</p>`;
+  h+= oes.length?`<p><b>Objetivos específicos:</b></p><ol>${oes.map(o=>`<li>${esc(o)}</li>`).join('')}</ol>`:`<p><span class="pend">[objetivos específicos — a preencher]</span></p>`;
+  if(val('e2.tem_hip')==='sim'){
+    h+=`<h3>1.4 Hipótese</h3>${P('e2.hipotese')}<p><b>Variável independente:</b> ${esc(val('e2.vi')||'—')}. <b>Variável dependente:</b> ${esc(val('e2.vd')||'—')}.</p>${val('e2.operacional')?`<p><b>Definição operacional:</b> ${nl2br(val('e2.operacional'))}</p>`:''}`;
+  }else if(val('e2.tem_hip')==='nao' && val('e2.sem_hip')){
+    h+=`<h3>1.4 Hipótese</h3><p>${nl2br(val('e2.sem_hip'))}</p>`;
+  }
+  h+=`<h2>2 Fundamentação teórica (estrutura prevista)</h2>${P('e6.criterios','Texto introdutório: critérios de seleção das fontes')}`;
+  if(val('e6.palavras')) h+=`<p><b>Palavras-chave e combinações de busca:</b> ${nl2br(val('e6.palavras'))}</p>`;
+  [1,2,3,4].forEach(i=>{
+    const t=val('e6.s'+i+'t'); if(!t && i===4) return;
+    const s='2.'+i;
+    h+=`<h3>${s} ${t?esc(t):'<span class="pend">[título a definir]</span>'}</h3>`;
+    if(val('e6.s'+i+'d')) h+=`<p>${nl2br(val('e6.s'+i+'d'))}</p>`;
+    const subs=val('e6.s'+i+'sub').split('\n').map(x=>x.trim()).filter(Boolean);
+    if(subs.length) h+=`<p><i>Subseções previstas:</i> ${subs.map((x,j)=>esc(s+'.'+(j+1)+' '+x.replace(/^\d+(\.\d+)*\s*/,''))).join('; ')}.</p>`;
+    const fs=fich.filter(o=>o.secao===s), ns=nor.filter(o=>o.secao===s);
+    if(fs.length||ns.length) h+=`<p><i>Fontes já selecionadas:</i> ${[...ns.map(o=>o.chamada||semMarca(o.ident).slice(0,60)),...fs.map(o=>o.chamada||semMarca(o.ref).split('.')[0])].filter(Boolean).map(esc).join('; ')}.</p>`;
+  });
+  h+=`<h2>3 Metodologia</h2><h3>3.1 Classificação da pesquisa</h3>`;
+  h+= (nivelTxt||valArr('e4.proc').length) ? `<p>Quanto aos objetivos, trata-se de pesquisa ${esc(nivelTxt||'—')}. ${val('e4.nivel_just')?esc(val('e4.nivel_just')):''}</p><p>Quanto aos procedimentos técnicos: ${esc(valArr('e4.proc').map(x=>procMap[x]).join(', ')||'—')}. ${val('e4.proc_just')?esc(val('e4.proc_just')):''}</p><p>Abordagem: ${esc(abMap[val('e4.abordagem')]||'—')}.</p>` : `<p><span class="pend">[classificação — a preencher]</span></p>`;
+  h+=`<h3>3.2 Universo e amostra</h3>${P('e5.universo')}${P('e5.amostra')}${val('e5.amostragem')?`<p>Tipo de amostragem: ${esc(amMap[val('e5.amostragem')])}.</p>`:''}${val('e5.local')?`<p>${nl2br(val('e5.local'))}</p>`:''}`;
+  h+=`<h3>3.3 Técnicas e instrumentos de coleta</h3><p>Técnicas previstas: ${esc(valArr('e5.tecnicas').map(x=>tecMap[x]).join(', ')||'—')}. O instrumento consta no Apêndice A e será submetido a pré-teste antes da aplicação.</p>${val('e5.pre_teste')?`<p>${nl2br(val('e5.pre_teste'))}</p>`:''}`;
+  h+=`<h3>3.4 Plano de análise dos dados</h3>${P('e5.analise')}<h3>3.5 Aspectos éticos</h3>${P('e5.etica')}`;
+  if(val('e5.limitacoes')) h+=`<h3>3.6 Limitações</h3><p>${nl2br(val('e5.limitacoes'))}</p>`;
+  h+=`<h2>4 Cronograma</h2>${ganttHTML(true)||'<p><span class="pend">[cronograma — a preencher]</span></p>'}<p style="font-size:12px">Azul: planejamento · Laranja: desenvolvimento.</p>`;
+  h+=`<h2>5 Recursos, custos e viabilidade</h2>`;
+  if(custos.length){ const tot=custos.reduce((s,o)=>s+num(o.qtd)*num(o.unit),0);
+    h+=`<table class="tbl" border="1" cellspacing="0" cellpadding="4" style="border-collapse:collapse;width:100%"><tr><th>Categoria</th><th>Item</th><th>Qtd.</th><th>Valor unit.</th><th>Total</th><th>Fonte do preço</th></tr>${custos.map(o=>`<tr><td>${esc(o.cat||'')}</td><td>${esc(o.item||'')}</td><td>${esc(o.qtd||'')}</td><td>${moeda(num(o.unit))}</td><td>${moeda(num(o.qtd)*num(o.unit))}</td><td>${esc(o.fonte||'')}</td></tr>`).join('')}
+      <tr><td colspan="4">Subtotal</td><td colspan="2">${moeda(tot)}</td></tr><tr><td colspan="4">Reserva para imprevistos (10%)</td><td colspan="2">${moeda(tot*.1)}</td></tr><tr><td colspan="4"><b>Total estimado</b></td><td colspan="2"><b>${moeda(tot*1.1)}</b></td></tr></table>`;
+  } else h+=`<p><span class="pend">[orçamento — a preencher]</span></p>`;
+  h+=`<h3>5.1 Viabilidade técnica</h3>${P('e8.viab_tec')}<h3>5.2 Viabilidade econômica</h3>${P('e8.viab_eco')}<h3>5.3 Riscos e plano alternativo</h3>${P('e8.riscos')}`;
+  // declaração IA
+  h+=`<h2>Declaração de uso de inteligência artificial</h2>${declaracaoIA()}`;
+  // referências
+  const refs=[...new Set([...fich.map(o=>o.ref), ...nor.map(o=>o.ident)].filter(Boolean).map(r=>r.trim()))].sort((a,b)=>semMarca(a).localeCompare(semMarca(b),'pt-BR'));
+  h+=`<h2>Referências</h2>${refs.length?refs.map(r=>`<p style="text-align:left;margin:0 0 12px">${fmtRef(r)}</p>`).join(''):'<p><span class="pend">[referências — a preencher]</span></p>'}`;
+  h+=`<h2>Apêndice A — Instrumento de coleta de dados (versão preliminar)</h2>${val('e5.instrumento')?`<p style="text-align:left">${nl2br(val('e5.instrumento'))}</p>`:'<p><span class="pend">[instrumento — a preencher]</span></p>'}`;
+  return h;
+}
+function baixarDoc(){
+  const css=`body{font-family:Arial,sans-serif;font-size:12pt;line-height:1.5}h1{font-size:16pt;text-align:center}h2{font-size:12pt;text-transform:uppercase;margin-top:18pt}h3{font-size:12pt}p{text-align:justify}.capa{text-align:center}.inst{text-transform:uppercase;font-size:11pt}.pend{color:#a33;background:#fdeeee}table{border-collapse:collapse;width:100%}th,td{border:1px solid #999;padding:4px;font-size:10pt;vertical-align:top}`;
+  const html=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>Projeto ${esc(S.grupo)}</title><style>${css}</style></head><body>${projetoHTML()}</body></html>`;
+  const blob=new Blob(['﻿',html],{type:'application/msword'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=`Projeto_${S.grupo}_${new Date().toISOString().slice(0,10)}.doc`; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+}
+function mensagemTeams(){
+  const g=S.grupos.find(x=>x.id===S.grupo);
+  const autores=S.membros.filter(m=>m.grupo===S.grupo && m.papel!=='professor').map(m=>m.nome);
+  const conc=ETAPAS.slice(0,9).filter(e=>concluida(e.id)).length;
+  const txt=`📌 ENTREGA — Projeto de Pesquisa (${S.grupo}${g?' · '+g.nome:''})
+Título provisório: ${val('e1.titulo')||'—'}
+Integrantes: ${autores.join('; ')}
+Pergunta de pesquisa: ${val('e1.problema')||'—'}
+Etapas concluídas: ${conc} de 9
+Arquivo anexado: Projeto_${S.grupo}_${new Date().toISOString().slice(0,10)}.doc
+Uso de IA: declarado no final do projeto.`;
+  modal('Mensagem de entrega para o canal do grupo',txt,'Copiem o texto, colem no canal do grupo no Teams e anexem o arquivo .doc baixado.');
+}
+function modal(titulo, texto, ajuda){
+  const f=document.createElement('div'); f.className='modal-fundo';
+  f.innerHTML=`<div class="modal"><h2>${esc(titulo)}</h2>${ajuda?`<p>${esc(ajuda)}</p>`:''}<textarea readonly>${esc(texto)}</textarea><div class="et-actions"><button class="btn" data-a="copiar">Copiar</button><button class="btn sec" data-a="fechar">Fechar</button></div></div>`;
+  document.body.appendChild(f);
+  f.addEventListener('click',async ev=>{
+    const a=ev.target.dataset?.a;
+    if(ev.target===f||a==='fechar') f.remove();
+    if(a==='copiar'){ const ta=$('textarea',f); ta.select(); try{ await navigator.clipboard.writeText(ta.value); }catch(e){ document.execCommand('copy'); } toast('Texto copiado'); }
+  });
+  return f;
+}
+
+/* ---------- resumo da aula ---------- */
+$('#bt-resumo').onclick=()=>{
+  const hoje=hojeStr(); const porEtapa={};
+  Object.entries(S.campos).forEach(([k,o])=>{
+    if(!o.em || hojeStr(new Date(o.em))!==hoje || k.startsWith('prof.')) return;
+    const et=k.includes(':')? (colCfg(k.split(':')[0])?.etapa) : k.split('.')[k.startsWith('status.')||k.startsWith('ia.')?1:0];
+    const nomeCampo = k.includes(':') ? LAB['col:'+k.split(':')[0]] : (LAB[k]||k);
+    (porEtapa[et]=porEtapa[et]||[]).push(`   • ${nomeCampo} — ${primeiroNome(o.nome)}`);
+  });
+  const g=S.grupos.find(x=>x.id===S.grupo);
+  let txt=`📋 Resumo da aula de ${hoje} — ${S.grupo}${g?' · '+g.nome:''}\n`;
+  const ets=Object.keys(porEtapa).filter(e=>ET[e]).sort();
+  if(!ets.length) txt+='\nNenhum registro feito hoje até agora.';
+  ets.forEach(e=>{ txt+=`\nEtapa ${num(e)} — ${ET[e].titulo}${concluida(e)?' ✓ concluída':''}\n`+[...new Set(porEtapa[e])].join('\n')+'\n'; });
+  txt+=`\nPróximo passo da equipe: `;
+  modal('Resumo da aula para o Teams',txt,'Copiem, completem o "próximo passo" e postem no canal do grupo ao final da aula.');
+};
+
+/* =====================================================================
+   ABNT — NBR 6023:2025 (referências), NBR 10520:2023 (citações), NBR 6028:2021 (resumo)
+   ===================================================================== */
+const MES_ABNT=['jan.','fev.','mar.','abr.','maio','jun.','jul.','ago.','set.','out.','nov.','dez.'];
+function dataAbnt(iso){ if(!iso) return ''; const [y,m,d]=iso.split('-').map(Number); if(!y||!m||!d) return ''; return `${d} ${MES_ABNT[m-1]} ${y}`; }
+const fmtRef = s => esc(s||'').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+const semMarca = s => String(s||'').replace(/\*\*/g,'');
+function checarCampo(tipo, v, o){
+  const av=[]; v=String(v||'').trim();
+  if(tipo==='ref'){
+    if(!v) return '';
+    if(!/\b(1[5-9]|20)\d{2}\b|\[\d{2}[\d-]{2}\??\]|\[s\. d\.\]/.test(v)) av.push('Não encontrei o ano de publicação.');
+    if(/https?:\/\//.test(v) && !/Disponível em:/.test(v)) av.push('Há um endereço eletrônico: use "Disponível em:" antes dele (NBR 6023, 6.6).');
+    if(/Disponível em:/.test(v) && !/Acesso em:/.test(v)) av.push('Documento online precisa de "Acesso em:" com a data (NBR 6023, 6.6).');
+    if(o && o.link && !/Disponível em:|DOI:/.test(v)) av.push('Vocês informaram um link, mas ele não aparece na referência.');
+    if(!/\.$/.test(v)) av.push('A referência termina com ponto final.');
+    if(/^[a-zà-ú]/.test(v)) av.push('A entrada (sobrenome ou entidade) começa com letras maiúsculas: SILVA, Ana; BRASIL.');
+    if(!/\*\*.+\*\*/.test(v) && !/^BRASIL\./.test(v)) av.push('Lembrete: o título (ou o nome da revista) deve ter destaque uniforme, como negrito. Aqui o negrito é marcado com **asteriscos**.');
+  }
+  if(tipo==='citacao'){
+    if(!v) return '';
+    if(!/[“"]/.test(v)) av.push('Citação direta vai entre aspas duplas.');
+    if(!/\bp\.\s*\d|local\.|\bf\.\s*\d/.test(v)) av.push('Em citação direta, indiquem a página: (Sobrenome, ano, p. X).');
+  }
+  return av.length?`<div style="font-size:13px;color:#8a4a10;margin-top:4px">${av.map(a=>'⚠ '+esc(a)).join('<br>')}</div>`:`<div style="font-size:13px;color:var(--green);margin-top:4px">✓ Formato básico ok — confiram os dados na fonte.</div>`;
+}
+
+/* ---------- montador de referências ---------- */
+const TIPOS_REF = {
+  artigo:{l:'Artigo de periódico (revista científica)', campos:['autores','titulo','subtitulo','revista','local','volume','numero','paginas','mesano','doi','url','acesso']},
+  livro:{l:'Livro (impresso ou e-book)', campos:['autores','titulo','subtitulo','edicao','local','editora','ano','url','acesso']},
+  capitulo:{l:'Capítulo de livro', campos:['autores','titulo','subtitulo','organizadores','livro','edicao','local','editora','ano','paginas','url','acesso']},
+  academico:{l:'TCC, dissertação ou tese', campos:['autores','titulo','subtitulo','ano','tipotrab','grau','instituicao','local','url','acesso']},
+  nr:{l:'Norma Regulamentadora (NR)', campos:['nrnum','nrtitulo','anodoc','url','acesso']},
+  lei:{l:'Lei ou decreto', campos:['jurisdicao','epigrafe','ementa','publicador','anodoc','url','acesso']},
+  abnt:{l:'Norma técnica ABNT', campos:['nbr','titulo','ano']},
+  web:{l:'Página da internet / notícia / relatório online', campos:['autores','titulo','site','data','url','acesso']},
+};
+const CAMPOS_REF = {
+  autores:{l:'Autores — um por linha, no formato Sobrenome, Prenomes',area:true,ph:'Silva, Ana Maria\nSouza, João'},
+  entidade:{l:''},
+  titulo:{l:'Título (sem o subtítulo)'}, subtitulo:{l:'Subtítulo (se houver)'},
+  revista:{l:'Nome da revista'}, local:{l:'Local (cidade)'}, volume:{l:'Volume (só o número)'}, numero:{l:'Número / fascículo'},
+  paginas:{l:'Páginas (ex.: 15-28)'}, mesano:{l:'Mês e ano (ex.: jan./mar. 2024 ou 2024)'}, doi:{l:'DOI (se houver)'},
+  url:{l:'Endereço eletrônico (URL)'}, acesso:{l:'Data de acesso',tipo:'date'},
+  edicao:{l:'Edição (só se não for a 1ª; ex.: 4)'}, editora:{l:'Editora'}, ano:{l:'Ano'},
+  organizadores:{l:'Organizadores do livro — um por linha (Sobrenome, Prenomes)',area:true}, livro:{l:'Título do livro'},
+  tipotrab:{l:'Tipo de trabalho',sel:['Trabalho de Conclusão de Curso','Dissertação','Tese','Monografia']},
+  grau:{l:'Grau e curso (ex.: Técnico em Segurança do Trabalho; Mestrado em Engenharia)'},
+  instituicao:{l:'Instituição (ex.: Escola de Engenharia de Lorena, Universidade de São Paulo)'},
+  nrnum:{l:'Número da NR (ex.: 35)'}, nrtitulo:{l:'Título da NR (ex.: trabalho em altura)'},
+  anodoc:{l:'Ano da redação consultada (ex.: 2023)'},
+  jurisdicao:{l:'Jurisdição (ex.: BRASIL; SÃO PAULO (Estado))'}, epigrafe:{l:'Epígrafe (ex.: Lei nº 13.709, de 14 de agosto de 2018)'},
+  ementa:{l:'Ementa, como publicada',area:true}, publicador:{l:'Responsável pela publicação online (ex.: Presidência da República)'},
+  nbr:{l:'Número da norma (ex.: NBR 5410)'}, site:{l:'Nome do site ou portal'}, data:{l:'Data da publicação (ex.: 6 abr. 2025)'},
+};
+function fmtAutor(linha){
+  const t=linha.trim(); if(!t) return '';
+  if(!t.includes(',')) return t.toUpperCase();          // entidade ou nome sem vírgula
+  const [sob,...pre]=t.split(','); return sob.trim().toUpperCase()+', '+pre.join(',').trim();
+}
+function sobrenomeCit(linha){
+  const t=linha.trim(); if(!t) return '';
+  const base = t.includes(',') ? t.split(',')[0].trim() : t;
+  return base.toLowerCase().replace(/(^|[\s-])([a-zà-ú])/g,(m,a,b)=>a+b.toUpperCase()).replace(/\b(De|Da|Do|Dos|Das|E)\b/g,s=>s.toLowerCase());
+}
+function chamadaDe(autLinhas, ano){
+  const a=autLinhas.map(sobrenomeCit).filter(Boolean); if(!a.length) return '';
+  let par, txt;
+  if(a.length>=4){ par=a[0]+' et al.'; txt=a[0]+' et al.'; }
+  else { par=a.join('; '); txt=a.length===1?a[0]:a.slice(0,-1).join(', ')+' e '+a[a.length-1]; }
+  return `(${par}, ${ano||'ano'}) ou ${txt} (${ano||'ano'})`;
+}
+function gerarRef(tipo, f){
+  const aut=(f.autores||'').split('\n').map(fmtAutor).filter(Boolean).join('; ');
+  const tit = f.titulo ? f.titulo.trim()+(f.subtitulo?': '+f.subtitulo.trim():'') : '';
+  const onl = (f.url? ` Disponível em: ${f.url.trim()}.`:'') + (f.url&&f.acesso? ` Acesso em: ${dataAbnt(f.acesso)}.`:'');
+  const anoAut=(f.ano||f.mesano||f.anodoc||f.data||'').match(/\d{4}/)?.[0]||'';
+  let ref='', cham='';
+  const ed = f.edicao? ` ${f.edicao.replace(/\D/g,'')}. ed.`:'';
+  switch(tipo){
+    case 'artigo':
+      ref=`${aut}. ${tit}. **${(f.revista||'').trim()}**, ${(f.local||'[S. l.]').trim()}${f.volume?', v. '+f.volume.trim():''}${f.numero?', n. '+f.numero.trim():''}${f.paginas?', p. '+f.paginas.trim():''}, ${(f.mesano||'').trim()}.${f.doi?' DOI: '+f.doi.trim()+'.':''}${onl}`;
+      cham=chamadaDe((f.autores||'').split('\n'), anoAut); break;
+    case 'livro':
+      ref=`${aut}. **${(f.titulo||'').trim()}**${f.subtitulo?': '+f.subtitulo.trim():''}.${ed} ${(f.local||'[S. l.]').trim()}: ${(f.editora||'[s. n.]').trim()}, ${(f.ano||'').trim()}.${f.url?' E-book.':''}${onl}`;
+      cham=chamadaDe((f.autores||'').split('\n'), anoAut); break;
+    case 'capitulo': {
+      const org=(f.organizadores||'').split('\n').map(fmtAutor).filter(Boolean).join('; ');
+      ref=`${aut}. ${tit}. In: ${org?org+' (org.). ':''}**${(f.livro||'').trim()}**.${ed} ${(f.local||'[S. l.]').trim()}: ${(f.editora||'[s. n.]').trim()}, ${(f.ano||'').trim()}.${f.paginas?' p. '+f.paginas.trim()+'.':''}${onl}`;
+      cham=chamadaDe((f.autores||'').split('\n'), anoAut); break; }
+    case 'academico':
+      ref=`${aut}. **${(f.titulo||'').trim()}**${f.subtitulo?': '+f.subtitulo.trim():''}. ${(f.ano||'').trim()}. ${f.tipotrab||'Trabalho de Conclusão de Curso'} (${(f.grau||'').trim()}) – ${(f.instituicao||'').trim()}, ${(f.local||'').trim()}, ${(f.ano||'').trim()}.${onl}`;
+      cham=chamadaDe((f.autores||'').split('\n'), anoAut); break;
+    case 'nr':
+      ref=`BRASIL. Ministério do Trabalho e Emprego. **NR-${(f.nrnum||'').trim()}**: ${(f.nrtitulo||'').trim()}. Brasília, DF: Ministério do Trabalho e Emprego, [${(f.anodoc||'').trim()}].${onl}`;
+      cham=`(Brasil, ${f.anodoc||'ano'}) ou Brasil (${f.anodoc||'ano'})`; break;
+    case 'lei':
+      ref=`${(f.jurisdicao||'BRASIL').trim().toUpperCase()}. ${(f.epigrafe||'').trim()}. ${(f.ementa||'').trim().replace(/\.$/,'')}. ${f.publicador?'Brasília, DF: '+f.publicador.trim()+', ':''}[${(f.anodoc||'').trim()}].${onl}`;
+      { const j=sobrenomeCit((f.jurisdicao||'Brasil').replace(/\(.*\)/,'')); const an=(f.epigrafe||'').match(/\d{4}/)?.[0]||f.anodoc||'ano'; cham=`(${j}, ${an}) ou ${j} (${an})`; } break;
+    case 'abnt':
+      ref=`ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. **ABNT ${(f.nbr||'').trim().replace(/^ABNT\s*/i,'')}**: ${(f.titulo||'').trim()}. Rio de Janeiro: ABNT, ${(f.ano||'').trim()}.`;
+      cham=`(Associação Brasileira de Normas Técnicas, ${f.ano||'ano'}) ou (ABNT, ${f.ano||'ano'})`; break;
+    case 'web':
+      ref=`${aut?aut+'. ':''}${aut?tit:(tit.split(' ')[0]||'').toUpperCase()+tit.slice((tit.split(' ')[0]||'').length)}. ${f.site?'**'+f.site.trim()+'**, ':''}${(f.data||'').trim()}.${onl}`;
+      cham=aut?chamadaDe((f.autores||'').split('\n'), anoAut):`(${(tit.split(' ')[0]||'Título')} [...], ${anoAut||'ano'})`; break;
+  }
+  ref=ref.replace(/\s+\./g,'.').replace(/\.\./g,'.').replace(/\s{2,}/g,' ').replace(/,\s*,/g,',').replace(/, \./g,'.').trim();
+  return {ref, cham};
+}
+function montadorRef(card, cfg){
+  const isNorma = cfg.prefixo==='norma';
+  const f=document.createElement('div'); f.className='modal-fundo';
+  const tipos=Object.entries(TIPOS_REF).filter(([k])=> isNorma ? ['nr','lei','abnt','web'].includes(k) : true);
+  f.innerHTML=`<div class="modal"><h2>Montar referência (ABNT NBR 6023:2025)</h2>
+    <p style="margin-top:0;font-size:14px;color:var(--muted)">Preencham com os dados da própria fonte (folha de rosto, cabeçalho do artigo, página oficial). Nunca com dados sugeridos por IA.</p>
+    <div class="campo"><label>Tipo de documento</label><select id="mr-tipo">${tipos.map(([k,t])=>`<option value="${k}">${esc(t.l)}</option>`).join('')}</select></div>
+    <div id="mr-campos"></div>
+    <div class="campo"><span class="lbl">Prévia da referência</span><div id="mr-prev" class="doc" style="padding:12px 14px;font-size:14px"></div></div>
+    <div class="campo"><span class="lbl">Chamada no texto (NBR 10520:2023)</span><div id="mr-cham" style="font-size:14.5px"></div></div>
+    <p style="font-size:12.5px;color:var(--muted)" id="mr-nota"></p>
+    <div class="et-actions"><button class="btn" id="mr-ok">Usar esta referência</button><button class="btn sec" id="mr-x">Cancelar</button></div></div>`;
+  document.body.appendChild(f);
+  const desenha=()=>{
+    const t=$('#mr-tipo',f).value;
+    $('#mr-campos',f).innerHTML=TIPOS_REF[t].campos.map(c=>{ const d=CAMPOS_REF[c];
+      if(d.sel) return `<div class="campo"><label>${esc(d.l)}</label><select data-mr="${c}">${d.sel.map(s=>`<option>${esc(s)}</option>`).join('')}</select></div>`;
+      if(d.area) return `<div class="campo"><label>${esc(d.l)}</label><textarea data-mr="${c}" rows="2" placeholder="${esc(d.ph||'')}"></textarea></div>`;
+      return `<div class="campo"><label>${esc(d.l)}</label><input type="${d.tipo==='date'?'date':'text'}" data-mr="${c}" ${d.tipo==='date'?`value="${new Date().toISOString().slice(0,10)}"`:''}></div>`; }).join('');
+    $('#mr-nota',f).textContent = t==='nr' ? 'NRs são atos administrativos do MTE: o modelo segue a lógica da NBR 6023 (7.11.5 e 7.11.6). Confiram a redação vigente no portal do MTE e confirmem o formato com o professor.'
+      : t==='web' ? 'Sem autor pessoal, a entrada pode ser a entidade responsável (ex.: FUNDACENTRO) — escrevam-na na linha de autores, sem vírgula.'
+      : 'Até 3 autores: todos são indicados. Com 4 ou mais, convém indicar todos (a NBR 6023 permite o primeiro seguido de et al.).';
+    $$('[data-mr]',f).forEach(el=>el.addEventListener('input',prev)); prev();
+  };
+  const dados=()=>Object.fromEntries($$('[data-mr]',f).map(el=>[el.dataset.mr,el.value]));
+  function prev(){ const r=gerarRef($('#mr-tipo',f).value, dados()); $('#mr-prev',f).innerHTML=fmtRef(r.ref); $('#mr-cham',f).textContent=r.cham; }
+  $('#mr-tipo',f).addEventListener('change',desenha); desenha();
+  $('#mr-x',f).onclick=()=>f.remove();
+  $('#mr-ok',f).onclick=()=>{
+    const r=gerarRef($('#mr-tipo',f).value, dados());
+    const campoRef=$(isNorma?'[data-cf="ident"]':'[data-cf="ref"]',card); if(campoRef) campoRef.value=r.ref;
+    const campoCh=$('[data-cf="chamada"]',card); if(campoCh) campoCh.value=r.cham.split(' ou ')[0];
+    const d=dados(); const lk=$('[data-cf="link"]',card); if(lk && !lk.value) lk.value=d.doi||d.url||'';
+    if(isNorma){ const tp=$('[data-cf="tipo"]',card); const m={nr:'NR',lei:'Lei',abnt:'Norma ABNT',web:'Outro'}[$('#mr-tipo',f).value]; if(tp && !tp.value) tp.value=m; }
+    card._gravar(true); f.remove(); toast('Referência inserida — confiram com a fonte');
+  };
+}
+function paginaABNT(){
+  return `<header class="et-head"><div class="et-num">Apoio</div><h1>Normas ABNT</h1><p class="sub">Referências, citações e resumo — o essencial para o projeto e para o artigo</p></header>
+  <div class="alerta">As normas são documentos protegidos por direitos autorais. Esta página resume, com outras palavras, os pontos de uso mais frequente. Em caso de dúvida, consultem o texto oficial disponível na biblioteca ou com o professor.</div>
+  <div class="card"><h2>Referências — ABNT NBR 6023:2025</h2>
+    <ul>
+      <li>Todas as fontes citadas no texto aparecem na lista de <b>Referências</b>, em ordem alfabética, alinhadas à esquerda, em espaço simples e separadas por uma linha em branco.</li>
+      <li>O autor entra pelo <b>último sobrenome em maiúsculas</b>, seguido dos prenomes: SILVA, Ana Maria. Vários autores são separados por ponto e vírgula. Até três, todos aparecem; com quatro ou mais, convém indicar todos, sendo permitido o primeiro seguido de <i>et al.</i></li>
+      <li>Quando a responsabilidade é de uma instituição, ela entra pelo nome completo em maiúsculas (ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS). Órgãos do governo entram pela jurisdição (BRASIL. Ministério do Trabalho e Emprego.).</li>
+      <li>O título recebe <b>um único tipo de destaque</b> (negrito, itálico ou sublinhado), usado igual em todas as referências. No artigo de revista, o destaque vai no nome da revista; no livro e no TCC, no título.</li>
+      <li>Documento online: acrescentar <b>Disponível em:</b> endereço e <b>Acesso em:</b> data (ex.: 1 out. 2026). Se houver DOI, ele também é indicado.</li>
+      <li>Meses são abreviados: jan. fev. mar. abr. maio jun. jul. ago. set. out. nov. dez.</li>
+    </ul>
+    <h3>Modelos (exemplos ilustrativos, não são fontes reais)</h3>
+    <div class="ex"><b>Artigo:</b> ${fmtRef('SOBRENOME, Prenome; SOBRENOME, Prenome. Título do artigo: subtítulo. **Nome da Revista**, Cidade, v. 12, n. 3, p. 45-60, 2024. DOI: 10.xxxx/xxxx. Disponível em: https://... . Acesso em: 1 out. 2026.')}</div>
+    <div class="ex"><b>Livro:</b> ${fmtRef('SOBRENOME, Prenome. **Título do livro**: subtítulo. 3. ed. Cidade: Editora, 2020.')}</div>
+    <div class="ex"><b>Capítulo:</b> ${fmtRef('SOBRENOME, Prenome. Título do capítulo. In: SOBRENOME, Prenome (org.). **Título do livro**. Cidade: Editora, 2021. p. 10-25.')}</div>
+    <div class="ex"><b>TCC:</b> ${fmtRef('SOBRENOME, Prenome. **Título do trabalho**. 2025. Trabalho de Conclusão de Curso (Técnico em Segurança do Trabalho) – Nome da Escola, Cidade, 2025.')}</div>
+    <div class="ex"><b>Lei:</b> ${fmtRef('BRASIL. Lei nº 0.000, de 00 de mês de 0000. Ementa conforme publicada. Brasília, DF: Presidência da República, [ano]. Disponível em: https://... . Acesso em: 1 out. 2026.')}</div>
+    <div class="ex"><b>Norma técnica:</b> ${fmtRef('ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. **ABNT NBR 0000**: título da norma. Rio de Janeiro: ABNT, ano.')}</div>
+    <div class="ex"><b>Exemplo real — a obra-base desta disciplina:</b> ${fmtRef('GIL, Antonio Carlos. **Como elaborar projetos de pesquisa**. 4. ed. São Paulo: Atlas, 2002.')}</div>
+    <p style="font-size:14px">Nos fichamentos (etapa 6), o botão <b>🧩 Montar referência ABNT</b> monta a referência e a chamada a partir dos dados da fonte.</p>
+  </div>
+  <div class="card"><h2>Citações — ABNT NBR 10520:2023</h2>
+    <ul>
+      <li><b>Sistema autor-data:</b> a chamada usa o sobrenome (ou a entidade) em <b>letras maiúsculas e minúsculas</b>, seguido do ano: (Gil, 2002) ou Gil (2002). Atenção: a versão de 2023 da norma deixou de usar o sobrenome todo em maiúsculas nos parênteses.</li>
+      <li>Dois ou três autores: (Silva; Souza, 2021) ou Silva e Souza (2021). Quatro ou mais: (Silva et al., 2021) — escolham uma forma e mantenham em todo o trabalho.</li>
+      <li>Várias fontes de uma vez: separadas por ponto e vírgula, de preferência em ordem alfabética: (Lima, 2019; Souza, 2021).</li>
+      <li>Órgão do governo entra pela jurisdição: (Brasil, 2023). Instituição pode aparecer pela sigla: (ABNT, 2004).</li>
+      <li><b>Citação indireta</b> (a ideia do autor, com as palavras da equipe): a página é opcional. É a forma que deve predominar no texto.</li>
+      <li><b>Citação direta</b> (cópia literal): sempre com a página. Até 3 linhas, entre aspas duplas no próprio parágrafo. Mais de 3 linhas: parágrafo destacado, com recuo de 4 cm, letra menor, espaço simples e sem aspas.</li>
+      <li>Trechos suprimidos: [...]. Acréscimos ou comentários: [ ]. Destaque feito pela equipe: acrescentar "grifo nosso" na chamada. Tradução feita pela equipe: "tradução nossa".</li>
+      <li><b>Citação de citação</b> (só quando não se teve acesso ao original): (Autor original, ano apud Autor consultado, ano, p. X). Usem com moderação: o ideal é buscar a fonte original.</li>
+      <li>Falas de entrevistas não publicadas não geram referência; identifiquem o participante sem expor o nome (Entrevistado A).</li>
+    </ul>
+    <div class="ex bom"><b>Indireta:</b> Para Gil (2002), o problema de pesquisa deve ser formulado como pergunta e delimitado a uma dimensão viável.</div>
+    <div class="ex bom"><b>Direta curta:</b> Segundo Gil (2002, p. 17), pesquisa é um "procedimento racional e sistemático".</div>
+  </div>
+  <div class="card"><h2>Resumo e palavras-chave — ABNT NBR 6028:2021</h2>
+    <ul>
+      <li>Parágrafo único, frases concisas, sem tópicos. Verbo de preferência na <b>terceira pessoa</b>.</li>
+      <li>Em trabalhos técnico-científicos recomenda-se o <b>resumo informativo</b>: finalidade, metodologia, resultados e conclusões. O resumo do projeto ainda não tem resultados; no artigo, terá.</li>
+      <li>Extensão recomendada: <b>100 a 250 palavras</b> em artigos de periódicos (150 a 500 em trabalhos acadêmicos e relatórios).</li>
+      <li>Palavras-chave logo abaixo do resumo: <b>Palavras-chave:</b> termos separados por ponto e vírgula e finalizados por ponto, com iniciais minúsculas (exceto nomes próprios e siglas). Ex.: Palavras-chave: trabalho em altura; NR-35; construção civil.</li>
+      <li>Evitar símbolos e abreviações que não sejam de uso corrente.</li>
+    </ul>
+  </div>`;
+}
+
+/* =====================================================================
+   USO DE IA
+   ===================================================================== */
+/* ---------- laboratório de prompt (método de Fernanda Scussel) ---------- */
+const PROMPTS = {
+  e1:{ obj:'avaliar criticamente a nossa pergunta de pesquisa, sem escrevê-la por nós',
+       base:['e1.tema','e1.onde','e1.quem','e1.problema'],
+       mat:()=>[['Tema',val('e1.tema')],['O que nos motivou',val('e1.inquietacao')],['Delimitação',[val('e1.onde'),val('e1.quem'),val('e1.quando')].filter(Boolean).join(' | ')],['Pergunta de pesquisa (versão atual)',val('e1.problema')]],
+       pedido:`1. Classifique a pergunta como problema científico, de valor ou de "engenharia" (como fazer), segundo Gil, e explique por quê.
+2. Verifique cada critério de Gil: formulada como pergunta; clara e precisa; empírica; suscetível de solução; delimitada a uma dimensão viável. Para cada um, responda "atende" ou "não atende" e justifique.
+3. Aponte termos vagos ou ambíguos.
+4. Faça até 3 perguntas que nos ajudem a delimitar melhor o problema.
+Não escreva uma nova pergunta de pesquisa para nós.` },
+  e2:{ obj:'verificar a coerência entre a pergunta, os objetivos e a hipótese',
+       base:['e1.problema','e2.obj_geral','e2.oe1','e2.oe2'],
+       mat:()=>[['Pergunta de pesquisa',val('e1.problema')],['Objetivo geral',val('e2.obj_geral')],['Objetivos específicos',['e2.oe1','e2.oe2','e2.oe3','e2.oe4'].map(val).filter(Boolean).map((o,i)=>(i+1)+'. '+o).join('\n')],['Hipótese',val('e2.tem_hip')==='sim'?val('e2.hipotese')+'\nVI: '+val('e2.vi')+' | VD: '+val('e2.vd'):'Pesquisa sem hipótese explícita'+(val('e2.sem_hip')?': '+val('e2.sem_hip'):'')]],
+       pedido:`1. O objetivo geral responde diretamente à pergunta? Explique.
+2. Algum objetivo específico é, na verdade, um procedimento (ex.: "aplicar questionário", "fazer pesquisa bibliográfica")? Indique qual.
+3. Os objetivos específicos, juntos, cobrem o objetivo geral? Falta algo ou sobra algo?
+4. Se houver hipótese: ela é testável, específica e sem julgamento de valor? As variáveis estão bem identificadas?
+Aponte os problemas; não reescreva os objetivos.` },
+  e3:{ obj:'revisar a estrutura e a fundamentação da introdução do nosso projeto',
+       base:['e3.contexto','e3.panorama','e3.lacuna','e3.dados','e3.importancia','e2.obj_geral'],
+       mat:()=>[['Contexto',val('e3.contexto')],['Panorama da literatura',val('e3.panorama')],['Lacuna',val('e3.lacuna')],['Pergunta de pesquisa',val('e1.problema')],['Dados de relevância',val('e3.dados')],['Importância',val('e3.importancia')],['Contribuição',val('e3.contribuicao')],['Objetivo geral',val('e2.obj_geral')]],
+       pedido:`1. Verifique se a sequência contexto → panorama → lacuna → pergunta → importância → objetivo está completa e lógica. Onde o raciocínio "salta"?
+2. A pergunta decorre naturalmente da lacuna?
+3. Liste as afirmações que aparecem SEM chamada de fonte (autor, ano) e que precisariam de uma.
+4. Aponte generalizações ou afirmações amplas demais (ex.: "muitos", "sempre", "a maioria").
+Não acrescente dados, números ou fontes. Não reescreva o texto.` },
+  e4:{ obj:'verificar se a classificação da pesquisa é coerente com o problema e os objetivos',
+       base:['e2.obj_geral','e4.nivel','e4.proc'],
+       mat:()=>[['Pergunta de pesquisa',val('e1.problema')],['Objetivo geral',val('e2.obj_geral')],['Classificação quanto aos objetivos',val('e4.nivel')+' — '+val('e4.nivel_just')],['Procedimentos técnicos',valArr('e4.proc').join(', ')+' — '+val('e4.proc_just')],['Abordagem',val('e4.abordagem')]],
+       pedido:`Com base nas categorias de Gil (exploratória, descritiva, explicativa; bibliográfica, documental, experimental, ex-post facto, levantamento, estudo de campo, estudo de caso, pesquisa-ação):
+1. A classificação quanto aos objetivos combina com o verbo do objetivo geral? Por quê?
+2. O delineamento escolhido consegue produzir os dados necessários para responder à pergunta?
+3. Há alguma incoerência entre o que pretendemos e o tipo de pesquisa escolhido?
+Faça perguntas se faltar informação. Não decida por nós.` },
+  e5:{ obj:'revisar o rascunho do nosso instrumento de coleta antes do pré-teste',
+       base:['e2.obj_geral','e2.oe1','e5.instrumento'],
+       mat:()=>[['Objetivos específicos',['e2.oe1','e2.oe2','e2.oe3','e2.oe4'].map(val).filter(Boolean).map((o,i)=>'OE'+(i+1)+'. '+o).join('\n')],['Universo e amostra',val('e5.universo')+'\n'+val('e5.amostra')],['Técnicas',valArr('e5.tecnicas').join(', ')],['Rascunho do instrumento',val('e5.instrumento')]],
+       pedido:`Para cada item do instrumento:
+1. Indique a qual objetivo específico ele responde (ou se não responde a nenhum).
+2. Verifique se trata de uma ideia só, se a linguagem é adequada a quem vai responder e se a pergunta sugere a resposta.
+Depois: há objetivo específico sem nenhuma pergunta correspondente? Há perguntas que podem constranger o participante?
+Aponte os problemas; se sugerir uma redação alternativa, faça no máximo para 2 itens, como exemplo.` },
+  e6:{ obj:'avaliar a arquitetura da nossa fundamentação teórica e a estratégia de busca',
+       base:['e1.problema','e6.s1t','e6.s2t','e6.s3t','e6.palavras'],
+       mat:()=>[['Pergunta de pesquisa',val('e1.problema')],['Arquitetura prevista',[1,2,3,4].filter(i=>val('e6.s'+i+'t')).map(i=>'2.'+i+' '+val('e6.s'+i+'t')+(val('e6.s'+i+'d')?' — '+val('e6.s'+i+'d'):'')).join('\n')],['Palavras-chave e combinações de busca',val('e6.palavras')]],
+       pedido:`1. As seções vão do mais amplo ao mais específico? Há sobreposição entre elas?
+2. Falta algum assunto necessário para sustentar a pergunta de pesquisa?
+3. Sugira outras palavras-chave ou sinônimos (em português e inglês) para a busca nas bases.
+IMPORTANTE: não indique artigos, autores, livros nem referências. Nós faremos a busca nas bases de dados.` },
+  e7:{ obj:'verificar se o nosso cronograma é realista e está na ordem certa',
+       base:['col:crono'],
+       mat:()=>[['Atividades',colItens('crono').map(o=>`- ${o.atividade} (${o.fase}) — meses: ${(o.meses||[]).map(i=>MESES[i]).join(', ')} — resp.: ${o.resp||'?'}`).join('\n')]],
+       pedido:`1. A sequência das atividades é lógica? (ex.: o pré-teste vem antes da coleta?)
+2. Algum prazo parece curto demais ou longo demais para estudantes de curso técnico?
+3. Falta alguma atividade importante do planejamento ou do desenvolvimento?
+Não refaça o cronograma; aponte os problemas.` },
+  e8:{ obj:'avaliar a viabilidade técnica e econômica do nosso projeto',
+       base:['e8.viab_tec','e8.viab_eco'],
+       mat:()=>[['Delineamento',val('e5.universo')+'\n'+val('e5.local')],['Custos previstos',colItens('custo').map(o=>`- ${o.item}: ${o.qtd} × R$ ${o.unit}`).join('\n')],['Viabilidade técnica',val('e8.viab_tec')],['Viabilidade econômica',val('e8.viab_eco')],['Riscos e plano B',val('e8.riscos')]],
+       pedido:`1. Que riscos para a execução não foram considerados?
+2. Há custos que provavelmente esquecemos?
+3. O plano B é realmente viável?
+Não invente preços; se citar um custo, diga que é para pesquisarmos.` },
+  e9:{ obj:'revisar exclusivamente a redação do resumo do nosso projeto',
+       base:['e9.resumo','e9.palavras'],
+       mat:()=>[['Resumo',val('e9.resumo')],['Palavras-chave',val('e9.palavras')]],
+       pedido:`1. Verifique se o resumo apresenta tema, problema, objetivo e metodologia prevista, em parágrafo único e na terceira pessoa (ABNT NBR 6028:2021).
+2. Aponte frases longas, ambíguas ou repetitivas.
+3. Verifique se as palavras-chave representam o conteúdo.
+Revise exclusivamente a redação: não acrescente informação nova, não introduza referências e não altere o conteúdo da pesquisa.` },
+};
+function montarPrompt(et){
+  const P_=PROMPTS[et.id]; if(!P_) return null;
+  const falta=P_.base.filter(k=> k.startsWith('col:') ? !colItens(k.slice(4)).length : !val(k)).map(k=>LAB[k]||k);
+  if(falta.length) return {falta};
+  const g=S.grupos.find(x=>x.id===S.grupo);
+  const mat=P_.mat().filter(([,v])=>String(v||'').trim()).map(([t,v])=>`[${t}]\n${String(v).trim()}`).join('\n\n');
+  const txt=`CONTEXTO
+Somos estudantes do curso Técnico em Segurança do Trabalho (Centro Paula Souza). Estamos na fase de PLANEJAMENTO do Trabalho de Conclusão de Curso, elaborando o PROJETO de pesquisa (o artigo será escrito no próximo semestre). Tema do grupo: ${val('e0.tema_teams')||(g?g.nome:'')}. Etapa atual: ${et.titulo}. Nossa base metodológica é GIL, A. C. Como elaborar projetos de pesquisa (2002).
+
+OBJETIVO DESTA CONVERSA
+Quero que você atue como um revisor crítico para ${P_.obj}.
+
+NOSSO MATERIAL (escrito pela equipe)
+${mat}
+
+DIRETRIZES PARA TODA A CONVERSA
+1. Trabalhe somente com o material acima. Não acrescente fatos, números, autores, normas ou referências que não estejam nele.
+2. Não reescreva o nosso texto. Aponte o problema, explique por que é um problema e, se necessário, dê no máximo um exemplo curto, deixando claro que é só um exemplo.
+3. Se faltar informação para avaliar algo, diga o que falta em vez de supor.
+4. Use linguagem clara, adequada a estudantes de curso técnico.
+5. Antes de responder, se precisar de mais alguma informação, pergunte.
+
+PEDIDO
+${P_.pedido}`;
+  return {txt};
+}
+function abrirLabPrompt(et){
+  const r=montarPrompt(et);
+  if(r.falta){ modalHTML('Laboratório de prompt',`<p><b>Primeiro a pesquisa, depois a IA.</b> A IA só ajuda de verdade quando trabalha sobre o que a equipe já construiu. Preparem a base desta etapa antes de usar o laboratório.</p><p>Ainda falta preencher:</p><ul>${r.falta.map(f=>'<li>'+esc(f)+'</li>').join('')}</ul>`); return; }
+  const f=modal('Laboratório de prompt — '+et.titulo, r.txt,
+    'Este prompt foi montado com o material que a equipe escreveu. Leiam antes de usar, ajustem se quiserem e colem na ferramenta de IA. Depois, registrem o uso abaixo, no card "Registro de uso de IA".');
+  const extra=document.createElement('details'); extra.className='entenda'; extra.style.margin='12px 0 0';
+  extra.innerHTML=`<summary>Depois da resposta: 5 passos para analisá-la (Scussel)</summary><div class="corpo"><ol>
+    <li><b>Como a IA entendeu o pedido?</b> Ficou genérica? Fez o que foi pedido, ou reescreveu quando pedimos análise? Trouxe autores ou referências que não demos?</li>
+    <li><b>Ajustem a direção com pedidos pontuais:</b> "trabalhe só neste trecho", "não traga informações novas", "não mude a estrutura".</li>
+    <li><b>Comparem as versões:</b> o ajuste resolveu o problema? Algo bom se perdeu?</li>
+    <li><b>Refinem em trechos cada vez menores</b> em vez de pedir para refazer tudo.</li>
+    <li><b>Leitura autoral final:</b> fechem a IA e releiam. Isso representa o que a equipe quer dizer? Vocês conseguiriam defender cada frase diante do professor ou de uma banca? Só então o texto entra no sistema.</li></ol></div>`;
+  $('.modal',f).insertBefore(extra, $('.modal .et-actions',f));
+}
+function modalHTML(titulo, html){
+  const f=document.createElement('div'); f.className='modal-fundo';
+  f.innerHTML=`<div class="modal"><h2>${esc(titulo)}</h2>${html}<div class="et-actions"><button class="btn sec" data-a="fechar">Fechar</button></div></div>`;
+  document.body.appendChild(f); f.addEventListener('click',ev=>{ if(ev.target===f||ev.target.dataset?.a==='fechar') f.remove(); });
+}
+
+function renderIAEtapa(et, lock){
+  const dis=lock?'disabled':''; const k='ia.'+et.id;
+  const usou=val(k+'.usou'); const fins=valArr(k+'.para');
+  const lab = PROMPTS[et.id] ? `<div style="background:var(--blue-soft);border:1px solid #cddcf6;border-radius:8px;padding:12px 14px;margin:0 0 14px">
+      <b>🧪 Laboratório de prompt (opcional)</b><br><span style="font-size:14px">Monta um prompt de <b>revisão crítica</b> com o material que a equipe já escreveu nesta etapa. A IA aponta problemas; quem decide e escreve é a equipe.</span><br>
+      <button type="button" class="btn peq" style="margin-top:8px" id="bt-lab" ${dis}>Montar prompt com o material da equipe</button></div>` : '';
+  return `<div class="card" style="border-left:4px solid var(--navy)">
+    <h2>Registro de uso de IA nesta etapa</h2>
+    <p class="ajuda" style="color:var(--muted);font-size:14px;margin:0 0 10px">Obrigatório para concluir a etapa. Declarar o uso de IA faz parte da integridade acadêmica. Veja <a href="#" data-irpara="ia">Uso responsável de IA</a>.</p>
+    ${lab}
+    <div class="campo"><div class="opts">
+      <label><input type="radio" name="r-${k}.usou" data-k="${k}.usou" value="nao" ${usou==='nao'?'checked':''} ${dis}><span>Não usamos IA nesta etapa</span></label>
+      <label><input type="radio" name="r-${k}.usou" data-k="${k}.usou" value="sim" ${usou==='sim'?'checked':''} ${dis}><span>Usamos IA nesta etapa</span></label>
+    </div><div class="meta" data-meta="${k}.usou"></div></div>
+    <div data-show="${k}.usou=sim">
+      <div class="campo"><label for="f-${k}.ferr">Qual ferramenta?</label><input type="text" id="f-${k}.ferr" data-k="${k}.ferr" value="${esc(val(k+'.ferr'))}" placeholder="Ex.: ChatGPT, Copilot, Gemini, Claude…" ${dis}><div class="meta" data-meta="${k}.ferr"></div></div>
+      <div class="campo"><span class="lbl">Para quê?</span><div class="opts" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">${IA_FINS.map(o=>`<label><input type="checkbox" data-k="${k}.para" data-opt="${o.v}" ${fins.includes(o.v)?'checked':''} ${dis}><span>${esc(o.l)}</span></label>`).join('')}</div><div class="meta" data-meta="${k}.para"></div></div>
+      <div class="campo"><label for="f-${k}.prompt">Prompt utilizado</label><p class="ajuda">Colem aqui o pedido principal feito à IA.</p><textarea id="f-${k}.prompt" data-k="${k}.prompt" rows="3" ${dis}>${esc(val(k+'.prompt'))}</textarea><div class="meta" data-meta="${k}.prompt"></div></div>
+      <div class="campo"><label for="f-${k}.conf">O que a equipe conferiu, aceitou, modificou ou descartou?</label><p class="ajuda">Ex.: "a IA apontou que a pergunta era de engenharia; reformulamos nós mesmos"; "uma palavra-chave sugerida não trouxe resultados e foi descartada".</p><textarea id="f-${k}.conf" data-k="${k}.conf" rows="3" ${dis}>${esc(val(k+'.conf'))}</textarea><div class="meta" data-meta="${k}.conf"></div></div>
+      ${ (fins.includes('texto')||fins.includes('referencias')) ? `<div class="alerta"><b>Atenção:</b> texto gerado por IA não pode ser apresentado como se fosse da equipe. Ferramentas de IA de conversa não consultam as bases científicas e podem inventar autores, títulos, números e itens de norma: toda referência precisa ser localizada e lida na fonte original.</div>`:''}
+    </div></div>`;
+}
+document.addEventListener('click',ev=>{
+  const a=ev.target.closest('[data-irpara]'); if(a){ ev.preventDefault(); ir(a.dataset.irpara); }
+  if(ev.target.id==='bt-lab'){ const et=ET[S.vista]; if(et) abrirLabPrompt(et); }
+});
+function declaracaoIA(){
+  const linhas=[]; let algum=false, respondeu=0;
+  ETAPAS.forEach((e,i)=>{
+    const k='ia.'+e.id; const u=val(k+'.usou'); if(u) respondeu++;
+    if(u==='sim'){ algum=true;
+      const fins=valArr(k+'.para').map(v=>IA_FINS.find(f=>f.v===v)?.l.toLowerCase()).filter(Boolean).join('; ');
+      linhas.push(`<li><b>Etapa ${i} (${esc(e.titulo)})</b>: ${esc(val(k+'.ferr')||'ferramenta não informada')} — ${esc(fins||'finalidade não informada')}. Verificação feita pela equipe: ${esc(val(k+'.conf')||'não informada')}.</li>`); }
+  });
+  if(!respondeu) return `<p><span class="pend">[registro de uso de IA — a preencher em cada etapa]</span></p>`;
+  if(!algum) return `<p>Os autores declaram que não utilizaram ferramentas de inteligência artificial na elaboração deste projeto.</p>`;
+  return `<p>Os autores declaram que utilizaram ferramentas de inteligência artificial como apoio nas etapas listadas abaixo. Nenhum trecho gerado por inteligência artificial foi incorporado sem revisão; todas as fontes citadas foram consultadas no original, e os autores assumem integral responsabilidade pelo conteúdo deste projeto.</p><ul>${linhas.join('')}</ul>`;
+}
+function paginaIA(){
+  return `<header class="et-head"><div class="et-num">Apoio</div><h1>Uso responsável de IA</h1><p class="sub">Primeiro a pesquisa, depois a escrita — e a IA entra para ajudar a escrita, não para pesquisar no lugar da equipe</p></header>
+  <div class="card">
+    <h2>Editar com IA não é o mesmo que escrever com IA</h2>
+    <p>Fernanda Scussel faz uma distinção que orienta todo o nosso trabalho:</p>
+    <ul>
+      <li><b>Editar e revisar</b> com IA: a equipe escreve e a IA ajuda a melhorar a clareza, a organização e a coerência de um texto que <i>já existe</i>. A autoria continua sendo da equipe.</li>
+      <li><b>Escrita automatizada</b>: pedir que a IA crie a introdução, a fundamentação ou a análise do zero. Aí a IA passa a ser a autora das ideias. O texto nasce genérico, frágil e, muitas vezes, impreciso, e apresentar essas ideias como próprias é uma forma de plágio.</li>
+    </ul>
+    <p>A autora também lembra que o texto acadêmico se apoia em <b>evidências e referências verificáveis</b>, não em opinião. Por isso, a IA nunca é fonte: ela não consulta as bases científicas e pode gerar referências que não existem.</p>
+  </div>
+  <div class="card">
+    <h2>Regras da nossa disciplina</h2>
+    <ol>
+      <li><b>Preparem a base antes de abrir a IA.</b> Pergunta, objetivos, fichamentos e decisões vêm da equipe. O Laboratório de prompt só é liberado quando a base da etapa está preenchida.</li>
+      <li><b>A IA trabalha só com o material de vocês.</b> Todo prompt deve dizer: "não acrescente fatos, autores ou referências que não estejam no material".</li>
+      <li><b>Uma parte de cada vez.</b> Peçam ajuda para um elemento por vez (a pergunta, depois os objetivos, depois a introdução…), nunca para "o projeto inteiro".</li>
+      <li><b>Nada entra no projeto sem revisão.</b> A resposta da IA é rascunho; só entra no sistema depois da leitura crítica e da reescrita pela equipe.</li>
+      <li><b>Referências só das bases de dados</b> (SciELO, Google Acadêmico, CAPES…) e sempre lidas. Normas e leis, só do texto oficial.</li>
+      <li><b>Privacidade:</b> nunca coloquem em ferramentas de IA nomes, falas ou dados de participantes, nem documentos internos de empresas.</li>
+      <li><b>Declarem o uso</b> no registro de cada etapa. A declaração final do projeto é montada automaticamente.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h2>Anatomia de um bom prompt</h2>
+    <p>No <i>Manual do prompt perfeito</i>, Scussel diferencia o <b>comando</b> (curto e genérico, que gera respostas genéricas) do <b>prompt</b> (estruturado, com contexto e regras). O Laboratório de prompt de cada etapa segue esta estrutura:</p>
+    <div class="tbl-scroll"><table class="tbl">
+      <tr><th>Parte</th><th>O que diz à IA</th></tr>
+      <tr><td><b>Contexto</b></td><td>Quem somos, qual curso, que tipo de trabalho, qual etapa.</td></tr>
+      <tr><td><b>Objetivo da conversa</b></td><td>O papel da IA nesta interação (ex.: revisor crítico).</td></tr>
+      <tr><td><b>Material</b></td><td>O que a equipe já escreveu, que será a única base.</td></tr>
+      <tr><td><b>Diretrizes</b></td><td>Não acrescentar referências; não reescrever; dizer quando falta informação; perguntar antes de responder.</td></tr>
+      <tr><td><b>Pedido</b></td><td>A tarefa específica, em passos.</td></tr>
+    </table></div>
+    <div class="ex ruim"><b>Comando:</b> "Melhore minha pergunta de pesquisa."</div>
+    <div class="ex bom"><b>Prompt:</b> "Somos estudantes do técnico em Segurança do Trabalho… [contexto]. Atue como revisor crítico da nossa pergunta… [material]. Não acrescente referências nem reescreva a pergunta… [diretrizes]. Classifique-a segundo Gil e aponte termos vagos… [pedido]."</div>
+  </div>
+  <div class="card">
+    <h2>Depois que a IA responder: 5 passos (Scussel)</h2>
+    <ol>
+      <li><b>Analisem como a IA interpretou o pedido.</b> A resposta ficou genérica, serviria para qualquer tema? Ela fez o que foi pedido? Apareceram autores, conceitos ou referências que vocês não forneceram?</li>
+      <li><b>Ajustem a direção com orientações pontuais:</b> "trabalhe só neste trecho", "não mude a estrutura", "não traga informações novas".</li>
+      <li><b>Comparem as versões</b> e identifiquem qual orientação funcionou.</li>
+      <li><b>Refinem em trechos cada vez menores</b> (um parágrafo, uma frase de transição).</li>
+      <li><b>Façam uma leitura autoral:</b> sem a IA, perguntem-se se o texto diz exatamente o que a equipe quer dizer e se cada afirmação poderia ser defendida diante do professor ou de uma banca.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h2>Pedidos que ajudam × pedidos que prejudicam</h2>
+    <div class="ex bom">"Esta é a nossa pergunta: […]. Ela é científica, de valor ou de engenharia? Não a reescreva."</div>
+    <div class="ex bom">"Explique a diferença entre pesquisa descritiva e explicativa com um exemplo de Segurança do Trabalho."</div>
+    <div class="ex bom">"Que palavras-chave em inglês eu poderia usar para buscar artigos sobre [tema]? Não indique artigos."</div>
+    <div class="ex bom">"Esta pergunta do questionário sugere a resposta? Aponte o problema."</div>
+    <div class="ex bom">"Revise exclusivamente a redação deste parágrafo, sem acrescentar informação nem referência."</div>
+    <div class="ex ruim">"Escreva a introdução do nosso projeto sobre [tema]."</div>
+    <div class="ex ruim">"Me dê 10 referências sobre [tema]."</div>
+    <div class="ex ruim">"Faça o fichamento deste artigo" (de um artigo que a equipe não leu).</div>
+    <div class="ex ruim">"Qual item da NR fala sobre isso?" — e usar a resposta sem conferir na norma.</div>
+  </div>
+  <p class="fonte-gil">Página elaborada com base em: SCUSSEL, Fernanda. <i>A nova escrita acadêmica</i> (guia); SCUSSEL, Fernanda. <i>Manual do prompt perfeito</i> (e-book). Conteúdo parafraseado para fins educacionais.</p>`;
+}
+
+/* =====================================================================
+   PAINEL DO PROFESSOR
+   ===================================================================== */
+async function renderPainel(){
+  const box=$('#painel');
+  let p; try{ p=await api('painel'); }catch(e){ box.innerHTML=`<div class="erro-bar">${esc(e.message)}</div>`; return; }
+  S.painel=p;
+  const est={}; p.estado.forEach(([g,c,login,nome,em,chars,v])=>{ (est[g]=est[g]||[]).push({c,login,nome,em,chars:+chars||0,v}); });
+  const regs=p.registros.map(r=>({em:r[0],login:r[1],nome:r[2],grupo:r[3],etapa:r[4],campo:r[5],chars:+r[6]||0,acao:r[7]}));
+  let h=`<header class="et-head"><div class="et-num">Professor</div><h1>Painel da turma</h1><p class="sub">Andamento das etapas e contribuição de cada integrante</p>
+     <div class="et-actions"><button class="btn sec peq" id="bt-atualiza-painel">↻ Atualizar</button></div></header><div class="pg-grid">`;
+  p.grupos.forEach(g=>{
+    const es=est[g.id]||[]; const st=Object.fromEntries(es.filter(x=>x.c.startsWith('status.')).map(x=>[x.c.slice(7),x.v]));
+    const ultima=regs.filter(r=>r.grupo===g.id && r.acao==='salvar').map(r=>r.em).sort().pop();
+    const conc=ETAPAS.slice(0,9).filter(e=>st[e.id]==='concluida').length;
+    h+=`<div class="pg-card"><h3>${esc(g.id)} — ${esc(g.nome)}</h3><div class="tm">${conc} de 9 etapas concluídas${st.liberar==='1'?' · sequência liberada':''}<br>Última edição: ${ultima?fmtData(ultima):'—'}</div>
+      <div class="dots">${ETAPAS.map((e,i)=>{ const ok=st[e.id]==='concluida'; const and=!ok && es.some(x=>x.c.startsWith(e.id+'.')&&x.chars>0); return `<span class="${ok?'ok':and?'and':''}" title="${esc(e.titulo)}">${ok?'✓':i}</span>`; }).join('')}</div>
+      <div class="et-actions" style="margin-top:4px"><button class="btn peq" data-vergrupo="${esc(g.id)}">Abrir projeto</button><button class="btn sec peq" data-contrib="${esc(g.id)}">Contribuições</button></div></div>`;
+  });
+  h+=`</div><div id="contrib"></div>`;
+  box.innerHTML=h;
+  $('#bt-atualiza-painel').onclick=renderPainel;
+  $$('[data-vergrupo]',box).forEach(b=>b.onclick=()=>trocarGrupo(b.dataset.vergrupo,'e0'));
+  $$('[data-contrib]',box).forEach(b=>b.onclick=()=>contribuicoes(b.dataset.contrib, est, regs));
+}
+function contribuicoes(gid, est, regs){
+  const p=S.painel; const g=p.grupos.find(x=>x.id===gid);
+  const membros=p.usuarios.filter(u=>u.grupo===gid && u.papel!=='professor');
+  const es=(est[gid]||[]).filter(x=>!x.c.startsWith('status.')&&!x.c.startsWith('prof.')&&x.chars>0);
+  const rg=regs.filter(r=>r.grupo===gid);
+  const linhas=membros.map(m=>{
+    const eds=rg.filter(r=>r.login===m.login && r.acao==='salvar');
+    const dias=new Set(rg.filter(r=>r.login===m.login && r.acao==='login').map(r=>hojeStr(new Date(r.em))));
+    const ult=rg.filter(r=>r.login===m.login).map(r=>r.em).sort().pop();
+    const chars=es.filter(x=>x.login===m.login).reduce((s,x)=>s+x.chars,0);
+    const campos=es.filter(x=>x.login===m.login).length;
+    const etapas=[...new Set(eds.map(r=>r.etapa).filter(e=>ET[e]))].sort().map(e=>num(e)).join(', ');
+    return {m,eds:eds.length,dias:dias.size,ult,chars,campos,etapas};
+  });
+  const totChars=linhas.reduce((s,l)=>s+l.chars,0)||1;
+  let h=`<div class="card"><h2>Contribuições — ${esc(gid)} · ${esc(g?.nome||'')}</h2>
+    <p style="font-size:14px;color:var(--muted);margin-top:0"><b>Texto atual de autoria</b> = caracteres dos campos em que o integrante é o último a ter editado. <b>Edições</b> = salvamentos registrados (cada pausa na digitação gera um). <b>Aulas</b> = dias diferentes em que entrou no sistema.</p>
+    <div class="tbl-scroll"><table class="tbl membros"><tr><th>Integrante</th><th style="width:28%">Texto atual de autoria</th><th>Campos</th><th>Edições</th><th>Aulas</th><th>Etapas em que atuou</th><th>Último acesso</th></tr>
+    ${linhas.map(l=>`<tr><td>${esc(l.m.nome)}<br><small style="color:var(--muted)">${esc(l.m.login)}</small></td>
+      <td><div class="barra"><i style="width:${(l.chars/totChars*100).toFixed(1)}%"></i></div><small>${l.chars.toLocaleString('pt-BR')} caracteres (${(l.chars/totChars*100).toFixed(0)}%)</small></td>
+      <td class="num">${l.campos}</td><td class="num">${l.eds}</td><td class="num">${l.dias}</td><td>${esc(l.etapas||'—')}</td><td>${l.ult?fmtData(l.ult):'—'}</td></tr>`).join('')}
+    </table></div>
+    <h3>Linha do tempo (últimas 40 ações)</h3><ul class="timeline">${rg.slice().sort((a,b)=>a.em<b.em?1:-1).slice(0,40).map(r=>`<li><span class="h">${fmtData(r.em)}</span> · <b>${esc(primeiroNome(r.nome))}</b> ${r.acao==='login'?'entrou no sistema':`editou <i>${esc(r.campo.includes(':')?(LAB['col:'+r.campo.split(':')[0]]||r.campo):(LAB[r.campo]||r.campo))}</i> (etapa ${esc(ET[r.etapa]?String(num(r.etapa)):'—')})`}</li>`).join('')||'<li>Sem registros.</li>'}</ul></div>`;
+  $('#contrib').innerHTML=h; $('#contrib').scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>
